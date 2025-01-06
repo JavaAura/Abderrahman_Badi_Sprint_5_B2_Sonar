@@ -1,4 +1,4 @@
-import { createFeature, createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Track } from './track.model';
 import { TrackActions } from './track.actions';
@@ -6,54 +6,107 @@ import { TrackActions } from './track.actions';
 export const tracksFeatureKey = 'tracks';
 
 export interface State extends EntityState<Track> {
-  // additional entities state properties
+  message: string | null;
+  status: 'pending' | 'loading' | 'success' | 'error';
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
 
 export const initialState: State = adapter.getInitialState({
-  // additional entity state properties
+  message: null,
+  status: 'pending',
 });
 
 export const reducer = createReducer(
   initialState,
-  on(TrackActions.addTrack,
-    (state, action) => adapter.addOne(action.track, state)
+
+  on(TrackActions.loadTracks, (state) => ({
+    ...state,
+    status: 'loading' as const
+  })),
+  on(TrackActions.loadTracksSuccess, (state, { tracks }) => ({
+    ...adapter.setAll(tracks, state),
+    status: 'success' as const,
+    message: null
+  })),
+  on(TrackActions.loadTracksFailure, (state, { error }) => ({
+    ...state,
+    status: 'error' as const,
+    message: error
+  })),
+
+
+  on(TrackActions.addTrack, (state) => ({
+    ...state,
+    status: 'loading' as const,
+    messge: null,
+  })
   ),
-  on(TrackActions.upsertTrack,
-    (state, action) => adapter.upsertOne(action.track, state)
+  on(TrackActions.addTrackSuccess, (state, action) => ({
+    ...adapter.addOne(action.track, state),
+    status: 'success' as const,
+    messge: null,
+  })),
+  on(TrackActions.addTrackFailure, (state, { error }) => ({
+    ...state,
+    status: 'error' as const,
+    message: error,
+  })
   ),
-  on(TrackActions.addTracks,
-    (state, action) => adapter.addMany(action.tracks, state)
+
+
+  on(TrackActions.updateTrack, (state) => ({
+    ...state,
+    status: 'loading' as const,
+    message: null,
+  })
   ),
-  on(TrackActions.upsertTracks,
-    (state, action) => adapter.upsertMany(action.tracks, state)
+  on(TrackActions.updateTrackSuccess, (state, action) => ({
+    ...adapter.updateOne(action.track, state),
+    status: 'success' as const,
+    message: null,
+  })),
+  on(TrackActions.updateTrackFailure, (state, { error }) => ({
+    ...state,
+    status: 'error' as const,
+    message: error,
+  })
   ),
-  on(TrackActions.updateTrack,
-    (state, action) => adapter.updateOne(action.track, state)
+
+
+  on(TrackActions.deleteTrack, (state) => ({
+    ...state,
+    status: 'loading' as const,
+    message: null,
+  })
   ),
-  on(TrackActions.updateTracks,
-    (state, action) => adapter.updateMany(action.tracks, state)
+  on(TrackActions.deleteTrackSuccess, (state, action) => ({
+    ...adapter.removeOne(action.id, state),
+    status: 'success' as const,
+    message: null,
+  })),
+  on(TrackActions.deleteTrackFailure, (state, { error }) => ({
+    ...state,
+    status: 'error' as const,
+    message: error,
+  })
   ),
-  on(TrackActions.deleteTrack,
-    (state, action) => adapter.removeOne(action.id, state)
-  ),
-  on(TrackActions.deleteTracks,
-    (state, action) => adapter.removeMany(action.ids, state)
-  ),
-  on(TrackActions.loadTracks,
-    (state, action) => adapter.setAll(action.tracks, state)
-  ),
-  on(TrackActions.clearTracks,
-    state => adapter.removeAll(state)
-  ),
+
 );
 
 export const tracksFeature = createFeature({
   name: tracksFeatureKey,
   reducer,
   extraSelectors: ({ selectTracksState }) => ({
-    ...adapter.getSelectors(selectTracksState)
+    ...adapter.getSelectors(selectTracksState),
+    selectStatus: createSelector(
+      selectTracksState,
+      (state: State) => state.status
+    ),
+    selectMessage: createSelector(
+      selectTracksState,
+      (state: State) => state.message
+    ),
   }),
 });
 
@@ -62,4 +115,6 @@ export const {
   selectEntities,
   selectAll,
   selectTotal,
+  selectStatus,
+  selectMessage,
 } = tracksFeature;
