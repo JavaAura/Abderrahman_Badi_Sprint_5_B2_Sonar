@@ -1,4 +1,4 @@
-import { MusicCategory } from "../../core/enums/music-category.enum";
+import { MusicCategory } from "../../../core/enums/music-category.enum";
 
 export interface Track {
   id: string;

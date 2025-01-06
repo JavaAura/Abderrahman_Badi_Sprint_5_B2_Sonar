@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { TrackRoutingModule } from './track-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import * as fromTrack from '../state/tracks/track.reducer';
-import { TrackEffects } from '../state/tracks/track.effects';
+import * as fromTrack from './state/track.reducer';
+import { TrackEffects } from './state/track.effects';
 
 
 @NgModule({
