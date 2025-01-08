@@ -6,10 +6,13 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import * as fromTrack from './state/track.reducer';
 import { TrackEffects } from './state/track.effects';
+import { TrackComponent } from './components/track/track.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    TrackComponent
+  ],
   imports: [
     CommonModule,
     TrackRoutingModule,

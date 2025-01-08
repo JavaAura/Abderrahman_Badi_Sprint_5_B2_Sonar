@@ -9,10 +9,9 @@ import { PlayerActions } from './player.actions';
 export class PlayerEffects {
 
 
-  loadPlayers$ = createEffect(() => {
+  loadTrackMedia$ = createEffect(() => {
     return this.actions$.pipe(
-
-      ofType(PlayerActions.loadPlayers),
+      ofType(PlayerActions.loadTrackMedia),
       concatMap(() =>
               /** An EMPTY observable only emits completion. Replace with your own observable API request */
               EMPTY.pipe(

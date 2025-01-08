@@ -1,20 +1,28 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Update } from '@ngrx/entity';
-
-import { Player } from './player.model';
+import { Track } from '../../../features/track/state/track.model';
 
 export const PlayerActions = createActionGroup({
   source: 'Player/API',
   events: {
-    'Load Players': props<{ players: Player[] }>(),
-    'Add Player': props<{ player: Player }>(),
-    'Upsert Player': props<{ player: Player }>(),
-    'Add Players': props<{ players: Player[] }>(),
-    'Upsert Players': props<{ players: Player[] }>(),
-    'Update Player': props<{ player: Update<Player> }>(),
-    'Update Players': props<{ players: Update<Player>[] }>(),
-    'Delete Player': props<{ id: string }>(),
-    'Delete Players': props<{ ids: string[] }>(),
-    'Clear Players': emptyProps(),
+    // Playback controls
+    'Play': props<{ track: Track }>(),
+    'Play Success': props<{ trackId: string }>(),
+    'Play Failure': props<{ error: any }>(),
+    'Pause': emptyProps(),
+    'Next Track': emptyProps(),
+    'Previous Track': emptyProps(),
+
+    // Volume
+    'Set Volume': props<{ volume: number }>(),
+    'Toggle Mute': emptyProps(),
+
+    // Track progress
+    'Update Progress': props<{ currentTime: number; duration: number }>(),
+    'Seek': props<{ time: number }>(),
+
+    // Loading states
+    'Load Track Media': props<{ track: Track }>(),
+    'Load Track Media Success': props<{ audioUrl: string; coverUrl: string | null }>(),
+    'Load Track Media Failure': props<{ error: any }>()
   }
 });
