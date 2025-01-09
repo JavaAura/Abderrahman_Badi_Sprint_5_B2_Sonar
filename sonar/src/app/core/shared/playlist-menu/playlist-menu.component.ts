@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-playlist-menu',
   templateUrl: './playlist-menu.component.html',
-  styleUrl: './playlist-menu.component.css'
+  styleUrl: './playlist-menu.component.scss'
 })
 export class PlaylistMenuComponent {
   isOpen: boolean = false;
