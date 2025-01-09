@@ -5,6 +5,7 @@ import * as fromPlaylist from './state/playlist.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { PlaylistEffects } from './state/playlist.effects';
 import { PlaylistComponent } from './components/playlist/playlist.component';
+import { PlaylistRoutingModule } from './playlist-routing.module';
 
 
 
@@ -14,6 +15,7 @@ import { PlaylistComponent } from './components/playlist/playlist.component';
   ],
   imports: [
     CommonModule,
+    PlaylistRoutingModule,
     StoreModule.forFeature(fromPlaylist.playlistsFeatureKey, fromPlaylist.reducer),
     EffectsModule.forFeature([PlaylistEffects])
   ]
