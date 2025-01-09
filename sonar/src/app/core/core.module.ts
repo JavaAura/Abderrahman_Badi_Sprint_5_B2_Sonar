@@ -8,6 +8,7 @@ import { PlayerEffects } from './player/state/player.effects';
 import { PlayerComponent } from './player/components/player/player.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { PlaylistMenuComponent } from './shared/playlist-menu/playlist-menu.component';
+import { IndexedDbService } from './services/indexed-db.service'
 
 @NgModule({
   declarations: [
@@ -21,10 +22,11 @@ import { PlaylistMenuComponent } from './shared/playlist-menu/playlist-menu.comp
     EffectsModule.forFeature([PlayerEffects])
   ],
   exports: [
-    SidebarComponent
+    SidebarComponent,
+    PlayerComponent
   ],
   providers: [
-    
+    IndexedDbService
   ]
 })
 export class CoreModule { }
