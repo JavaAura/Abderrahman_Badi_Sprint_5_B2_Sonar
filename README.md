@@ -1,4 +1,4 @@
-# MusicStream
+# Sonar
 
 A modern music streaming application built with Angular 17, providing users with essential features to manage and play their local music library. The application integrates NgRx for state management, ensuring a seamless and maintainable architecture.
 
@@ -13,7 +13,7 @@ A modern music streaming application built with Angular 17, providing users with
 ## Project Overview
 
 **Context**:  
-MusicStream is designed to offer a simple and intuitive platform for users to manage, organize, and play their local music tracks. The application includes a fully functional CRUD system for tracks and an audio player with essential controls.
+Sonar is designed to offer a simple and intuitive platform for users to manage, organize, and play their local music tracks. The application includes a fully functional CRUD system for tracks and an audio player with essential controls.
 
 **Objectives**:  
 - Provide a user-friendly interface for managing tracks and playlists.
@@ -32,8 +32,8 @@ MusicStream is designed to offer a simple and intuitive platform for users to ma
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/musicstream.git
-   cd musicstream
+   git clone https://github.com/yourusername/Sonar.git
+   cd Sonar
 
 2. **Install dependencies:**
    ```bash
