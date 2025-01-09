@@ -15,9 +15,9 @@ import { PlaylistModule } from './features/playlist/playlist.module';
     AppComponent
   ],
   imports: [
+    CoreModule,
     TrackModule,
     PlaylistModule,
-    CoreModule,
     BrowserModule,
     AppRoutingModule,
     StoreModule.forRoot({}, {}),

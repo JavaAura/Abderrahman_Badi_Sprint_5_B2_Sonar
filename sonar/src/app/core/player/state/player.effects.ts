@@ -9,17 +9,17 @@ import { PlayerActions } from './player.actions';
 export class PlayerEffects {
 
 
-  loadTrackMedia$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(PlayerActions.loadTrackMedia),
-      concatMap(() =>
-              /** An EMPTY observable only emits completion. Replace with your own observable API request */
-              EMPTY.pipe(
-                map(data => PlayerActions.loadPlayerSuccess({ data })),
-                catchError(error => of(PlayerActions.loadPlayerFailure({ error }))))
-            )
-    );
-  });
+  // loadTrackMedia$ = createEffect(() => {
+  //   return this.actions$.pipe(
+  //     ofType(PlayerActions.loadTrackMedia),
+  //     concatMap(() =>
+  //             /** An EMPTY observable only emits completion. Replace with your own observable API request */
+  //             EMPTY.pipe(
+  //               map(data => PlayerActions.loadPlayerSuccess({ data })),
+  //               catchError(error => of(PlayerActions.loadPlayerFailure({ error }))))
+  //           )
+  //   );
+  // });
 
   constructor(private actions$: Actions) {}
 }

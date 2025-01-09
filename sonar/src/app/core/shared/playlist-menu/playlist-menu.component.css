@@ -1,0 +1,16 @@
+.overflow-y-auto::-webkit-scrollbar {
+    width: 3.5px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-button {
+    display: none;
+}
