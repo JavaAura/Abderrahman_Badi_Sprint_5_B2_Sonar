@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrl: './library.component.scss'
 })
 export class LibraryComponent {
+  counter: number = 20
 
+  get counterArray(): number[] {
+    return Array.from({ length: this.counter }, (_, index) => index + 1);
+  }
 }
