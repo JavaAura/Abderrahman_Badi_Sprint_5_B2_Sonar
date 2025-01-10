@@ -8,6 +8,7 @@ export const tracksFeatureKey = 'tracks';
 export interface State extends EntityState<Track> {
   message: string | null;
   status: 'pending' | 'loading' | 'success' | 'error';
+  editedTrack: Track | null;
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
@@ -15,10 +16,20 @@ export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
 export const initialState: State = adapter.getInitialState({
   message: null,
   status: 'pending',
+  editedTrack: null
 });
 
 export const reducer = createReducer(
   initialState,
+
+  on(TrackActions.editTrack, (state, { track }) => ({
+    ...state,
+    editedTrack: track  // Destructure track from action payload
+  })),
+  on(TrackActions.clearEditedTrack, (state) => ({
+    ...state,
+    editedTrack: null  // Clear the track
+  })),
 
   on(TrackActions.loadTracks, (state) => ({
     ...state,
@@ -107,6 +118,11 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.message
     ),
+    selectEditedTrack: createSelector(
+      selectTracksState,
+      (state: State) => state.editedTrack
+    ),
+
   }),
 });
 
@@ -117,4 +133,5 @@ export const {
   selectTotal,
   selectStatus,
   selectMessage,
+  selectEditedTrack
 } = tracksFeature;

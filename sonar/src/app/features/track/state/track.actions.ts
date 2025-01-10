@@ -6,6 +6,8 @@ import { Track } from './track.model';
 export const TrackActions = createActionGroup({
   source: 'Track/API',
   events: {
+    'Edit Track': props<{ track: Track }>(),
+    'Clear Edited Track': emptyProps(),
     'Load Tracks': props<{ tracks: Track[] }>(),
     'Load Tracks Success': props<{ tracks: Track[] }>(),
     'Load Tracks Failure': props<{ error: string }>(),
