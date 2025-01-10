@@ -1,11 +1,15 @@
-<div class="flex flex-col h-[76vh] gap-4 px-1">
-    <div class="h-[12vh] px-[4%]">
-        we
+<div class="flex flex-col h-[78vh] gap-4 px-1">
+    <div class="h-[14vh] pt-[2vh] px-[4%]">
+        <div class="flex items-center justify-between w-full">
+            <p class="text-5xl font-medium">Music</p>
+            <app-button-primary (click)="isOpen = !isOpen" />
+        </div>
     </div>
     <div class="flex-1 min-h-0 overflow-y-auto md:px-[4%]">
-        <div class="flex flex-col gap-2 items-center">
-            <div *ngFor="let item of counterArray ; let  i = index" [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border border-b-gray-400' : ''"
-                class="group flex items-center gap-1 md:gap-2 bg-gray-primary rounded-lg hover:bg-gray-secondary h-12 w-full text-xs pl-2 md:px-4">
+        <div class="flex flex-col gap-1 items-center">
+            <div *ngFor="let item of counterArray ; let  i = index"
+                [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border bg-white border-b-gray-400' : 'bg-gray-primary'"
+                class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-xs pl-2 md:px-4">
                 <div class="group-hover:visible invisible flex items-center justify-end w-[8%] md:w-[5%]">
                     <button class="hover:bg-gray-200 rounded-md p-1">
                         <svg class="stroke-red-custom w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
@@ -16,7 +20,7 @@
                     </button>
                 </div>
                 <div class="flex items-center w-[30%] md:w-[35%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap"> Divssssssssssssssssssssssssssssssssssssssssssssssssssssssss {{ item }}</p>
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap"> div {{ item }}</p>
                 </div>
                 <div class="flex items-center justify-center w-[19%] md:w-[15%]">
                     <p class="text-ellipsis overflow-hidden whitespace-nowrap">Artist {{ item }}</p>
@@ -34,3 +38,4 @@
         </div>
     </div>
 </div>
+<app-track-form *ngIf="isOpen" (close)="closeTrackForm()"/>
