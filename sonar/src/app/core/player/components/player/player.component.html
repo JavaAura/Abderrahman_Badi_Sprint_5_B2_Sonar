@@ -7,16 +7,16 @@
   </div>
   <p class="text-[13px]">{{ duration | timeFormat }}</p>
 </div>
-<div class="w-[99%] mx-auto h-[12vh] flex items-center pb-2">
-  <div class="flex items-center gap-2 w-[46%]">
+<div class="w-[99%] mx-auto h-[12vh] flex items-center justify-between pb-2">
+  <div class="flex items-center gap-2 w-[35%] sm:w-[40%] md:w-[46%]">
     <!-- ngIf="track.image" -->
     <!-- // To-do -->
     <!-- ngIf="!track.image" -->
-    <img src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md" alt="">
+    <img src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
     <p class="flex-shrink text-xl font-medium text-ellipsis overflow-hidden whitespace-nowrap">Path of Exile - Izaro's Labyrinth Interior
       (aTension Remix) [ ezmp3.cc ]</p>
   </div>
-  <div class="flex justify-center items-center gap-4 w-[14%]">
+  <div class="flex justify-center items-center gap-2 md:gap-4 w-[10%] md:w-[14%]">
     <button class="h-10 w-10 hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center">
       <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
         <path
@@ -55,7 +55,7 @@
       </svg>
     </button>
   </div>
-  <div class="w-[46%] flex items-center justify-end">
+  <div class="w-[35%] sm:w-[40%] md:w-[46%] flex items-center justify-end">
     <app-audio-button />
   </div>
 </div>

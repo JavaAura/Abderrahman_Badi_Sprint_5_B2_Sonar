@@ -2,23 +2,33 @@
     <div class="h-[12vh] px-[4%]">
         we
     </div>
-    <div class="flex-1 min-h-0 overflow-y-auto px-[4%]">
+    <div class="flex-1 min-h-0 overflow-y-auto md:px-[4%]">
         <div class="flex flex-col gap-2 items-center">
-            <div *ngFor="let item of counterArray" class="flex items-center gap-2 bg-white h-[52px] w-full border-b-0 shadow-sm rounded-lg border border-b-gray-400">
-                <div class="flex items-center w-[35%] pl-6">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap "> Div {{ item }}</p>
+            <div *ngFor="let item of counterArray ; let  i = index" [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border border-b-gray-400' : ''"
+                class="group flex items-center gap-1 md:gap-2 bg-gray-primary rounded-lg hover:bg-gray-secondary h-12 w-full text-xs pl-2 md:px-4">
+                <div class="group-hover:visible invisible flex items-center justify-end w-[8%] md:w-[5%]">
+                    <button class="hover:bg-gray-200 rounded-md p-1">
+                        <svg class="stroke-red-custom w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M16.6582 9.28638C18.098 10.1862 18.8178 10.6361 19.0647 11.2122C19.2803 11.7152 19.2803 12.2847 19.0647 12.7878C18.8178 13.3638 18.098 13.8137 16.6582 14.7136L9.896 18.94C8.29805 19.9387 7.49907 20.4381 6.83973 20.385C6.26501 20.3388 5.73818 20.0469 5.3944 19.584C5 19.053 5 18.1108 5 16.2264V7.77357C5 5.88919 5 4.94701 5.3944 4.41598C5.73818 3.9531 6.26501 3.66111 6.83973 3.6149C7.49907 3.5619 8.29805 4.06126 9.896 5.05998L16.6582 9.28638Z"
+                                stroke="current" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="flex items-center justify-center w-[15%]">
-
+                <div class="flex items-center w-[30%] md:w-[35%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap"> Divssssssssssssssssssssssssssssssssssssssssssssssssssssssss {{ item }}</p>
                 </div>
-                <div class="flex items-center justify-center w-[15%]">
-
+                <div class="flex items-center justify-center w-[19%] md:w-[15%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">Artist {{ item }}</p>
                 </div>
-                <div class="flex items-center justify-center w-[20%]">
-
+                <div class="flex items-center justify-center w-[19%] md:w-[15%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">Genre {{ item }}</p>
                 </div>
-                <div class="flex items-center justify-center w-[15%]">
-
+                <div class="flex items-center justify-center w-0 md:w-[15%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">2024-01-18</p>
+                </div>
+                <div class="flex items-center justify-center md:justify-end w-[19%] md:w-[15%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">06:53</p>
                 </div>
             </div>
         </div>
