@@ -14,18 +14,13 @@ export interface StoredFile {
   providedIn: 'root'
 })
 export class FileService {
+  private readonly storeName = 'files';
 
   constructor(private db: IndexedDbService) { }
 
-  async ngOnInit(): Promise<void> {
-    try {
-      await this.db.initialize();
-    } catch (error) {
-      console.error('Error initializing IndexedDB:', error);
-    }
-  }
 
   async storeFiles(trackFile: File, coverFile: File | null, trackId: string): Promise<boolean> {
+    await this.db.initialize();
     try {
       const generateId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36)}`;
 
@@ -59,21 +54,22 @@ export class FileService {
   private async storeFile(fileData: StoredFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        const store = this.db.getTransaction('files', 'readwrite');
+        const store = this.db.getTransaction(this.storeName, 'readwrite');
         const request = store.add(fileData);
 
         request.onsuccess = () => resolve(true);
         request.onerror = () => reject(false);
       } catch (error) {
-        reject(false);
+        reject(error);
       }
     });
   }
 
   async getAllFiles(): Promise<StoredFile[]> {
+    await this.db.initialize();
     return new Promise((resolve, reject) => {
       try {
-        const store = this.db.getTransaction('files', 'readonly');
+        const store = this.db.getTransaction(this.storeName, 'readonly');
         const request = store.getAll();
 
         request.onsuccess = () => resolve(request.result);
@@ -85,9 +81,10 @@ export class FileService {
   }
 
   async getFile(fileId: string): Promise<StoredFile | null> {
+    await this.db.initialize();
     return new Promise((resolve, reject) => {
       try {
-        const store = this.db.getTransaction('files', 'readonly');
+        const store = this.db.getTransaction(this.storeName, 'readonly');
         const request = store.get(fileId);
 
         request.onsuccess = () => resolve(request.result || null);
@@ -99,15 +96,16 @@ export class FileService {
   }
 
   async deleteFile(fileId: string): Promise<boolean> {
+    await this.db.initialize();
     return new Promise((resolve, reject) => {
       try {
-        const store = this.db.getTransaction('files', 'readwrite');
+        const store = this.db.getTransaction(this.storeName, 'readwrite');
         const request = store.delete(fileId);
 
         request.onsuccess = () => resolve(true);
         request.onerror = () => reject(false);
       } catch (error) {
-        reject(false);
+        reject(error);
       }
     });
   }

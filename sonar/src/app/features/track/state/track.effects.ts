@@ -4,23 +4,34 @@ import { catchError, map, concatMap, mergeMap } from 'rxjs/operators';
 import { Observable, EMPTY, of, from } from 'rxjs';
 import { TrackActions } from './track.actions';
 import { FileService } from '../../../core/services/file/file.service';
+import { TrackService } from '../services/track.service';
 
 
 @Injectable()
 export class TrackEffects {
 
-  // loadTracks$ = createEffect(() => {
-  //   return this.actions$.pipe(
+  loadTracks$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TrackActions.loadTracks),
+      mergeMap(() => from(this.trackService.getAllTracks())
+        .pipe(
+          map(tracks => TrackActions.loadTracksSuccess({ tracks })),
+          catchError(error => of(TrackActions.loadTracksFailure({ error })))
+        ))
+    );
+  });
 
-  //     ofType(TrackActions.loadTracks),
-  //     concatMap(() =>
-  //       /** An EMPTY observable only emits completion. Replace with your own observable API request */
-  //       EMPTY.pipe(
-  //         map(data => TrackActions.loadTracksSuccess({ data })),
-  //         catchError(error => of(TrackActions.loadTracksFailure({ error }))))
-  //     )
-  //   );
-  // });
+  addTrack$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TrackActions.addTrack),
+      mergeMap(({ track }) =>
+        from(this.trackService.addTrack(track))
+          .pipe(
+            map(track => TrackActions.addTrackSuccess({ track })),
+            catchError(error => of(TrackActions.addTrackFailure({ error })))
+          ))
+    )
+  );
 
   uploadFiles$ = createEffect(() =>
     this.actions$.pipe(
@@ -45,7 +56,7 @@ export class TrackEffects {
 
 
 
-  constructor(private actions$: Actions, private fileService: FileService) { }
+  constructor(private actions$: Actions, private fileService: FileService, private trackService: TrackService) { }
 }
 
 

@@ -11,7 +11,7 @@ export const TrackActions = createActionGroup({
     'Upload Track Files Failure': props<{ error: string }>(),
     'Edit Track': props<{ track: Track }>(),
     'Clear Edited Track': emptyProps(),
-    'Load Tracks': props<{ tracks: Track[] }>(),
+    'Load Tracks': emptyProps(),
     'Load Tracks Success': props<{ tracks: Track[] }>(),
     'Load Tracks Failure': props<{ error: string }>(),
     'Add Track': props<{ track: Track }>(),

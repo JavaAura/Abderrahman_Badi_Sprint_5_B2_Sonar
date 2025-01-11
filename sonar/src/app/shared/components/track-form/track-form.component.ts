@@ -1,11 +1,11 @@
 import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { MusicCategory } from '../../core/enums/music-category.enum';
-import { Track } from '../../features/track/state/track.model';
+import { MusicCategory } from '../../../core/enums/music-category.enum';
+import { Track } from '../../../features/track/state/track.model';
 import { Observable, Subscribable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectEditedTrack } from '../../features/track/state/track.reducer';
-import { TrackActions } from '../../features/track/state/track.actions';
+import { selectEditedTrack } from '../../../features/track/state/track.reducer';
+import { TrackActions } from '../../../features/track/state/track.actions';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class TrackFormComponent {
     private fb: FormBuilder,
   ) {
     this.trackForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
       author: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       category: ['', [Validators.required, this.categoryValidator.bind(this)]],
       file: ['', [Validators.required, this.fileValidator.bind(this)]],
@@ -65,6 +65,15 @@ export class TrackFormComponent {
         duration: duration,
         creationDate: new Date(),
       }
+
+      const uploadProps = {
+        trackFile: this.trackFile!,
+        coverFile: this.coverFile,
+        trackId: track.id
+      }
+
+      this.store.dispatch(TrackActions.uploadTrackFiles(uploadProps))
+      this.store.dispatch(TrackActions.addTrack({ track: track }))
     }
 
   }

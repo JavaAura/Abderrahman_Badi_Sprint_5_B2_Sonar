@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Track } from '../../../track/state/track.model';
-import { MusicCategory } from '../../../../core/enums/music-category.enum';
 import { TrackActions } from '../../../track/state/track.actions';
-import { log } from 'console';
+import { Observable } from 'rxjs';
+import { selectAll } from '../../../track/state/track.reducer';
 
 @Component({
   selector: 'app-library',
@@ -12,16 +12,13 @@ import { log } from 'console';
 })
 export class LibraryComponent {
   isOpen: boolean = false;
-  track: Track = {
-    id: '1',
-    name: "qsdqsdqsd",
-    author: 'qsdqsdqsd',
-    duration: 200,
-    category: MusicCategory.POP,
-    creationDate: new Date()
-  }
+  tracks$: Observable<Track[]> = this.store.select(selectAll);
 
   constructor(private store: Store) { }
+
+  ngOnInit() {
+    this.store.dispatch(TrackActions.loadTracks());
+  }
 
   closeTrackForm() {
     this.isOpen = false;
@@ -30,16 +27,6 @@ export class LibraryComponent {
   editTrack(track: Track) {
     this.store.dispatch(TrackActions.editTrack({ track }))
     this.isOpen = true;
-  }
-
-
-
-
-  // To be deleted 
-  counter: number = 20
-
-  get counterArray(): number[] {
-    return Array.from({ length: this.counter }, (_, index) => index + 1);
   }
 
 }
