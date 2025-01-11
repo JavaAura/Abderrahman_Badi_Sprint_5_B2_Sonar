@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MusicCategory } from '../../core/enums/music-category.enum';
 import { Track } from '../../features/track/state/track.model';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscribable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectEditedTrack } from '../../features/track/state/track.reducer';
 import { TrackActions } from '../../features/track/state/track.actions';
@@ -14,18 +14,22 @@ import { TrackActions } from '../../features/track/state/track.actions';
   styleUrl: './track-form.component.scss'
 })
 export class TrackFormComponent {
+
   track$: Observable<Track | null> = this.store.select(selectEditedTrack);
   editedTrack: Track | null = null;
-  private subscription: Subscription;
-  taskForm: FormGroup;
+  trackForm: FormGroup;
   categories: string[] = Object.values(MusicCategory);
+  editMode$: Observable<unknown> | Subscribable<unknown> | Promise<unknown> | undefined;
   @Output() close = new EventEmitter<void>();
+  private subscription: Subscription;
+  private trackFile: File | null = null;
+  private coverFile: File | null = null;
 
   constructor(
     private store: Store,
     private fb: FormBuilder,
   ) {
-    this.taskForm = this.fb.group({
+    this.trackForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       author: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       category: ['', [Validators.required, this.categoryValidator.bind(this)]],
@@ -33,11 +37,64 @@ export class TrackFormComponent {
       cover: ['', this.coverValidator.bind(this)]
     });
     this.subscription = this.track$.subscribe((track) => this.editedTrack = track);
-    console.log(this.editedTrack);
   }
 
+  ngOnInit() {
+    if (this.editedTrack) {
+      this.trackForm.patchValue({
+        id: this.editedTrack.id,
+        name: this.editedTrack.name,
+        author: this.editedTrack.author,
+        category: this.editedTrack.category,
+      })
+    }
+  }
+
+  async onSubmit() {
+    if (this.trackForm.invalid) return;
+    const trackData = this.trackForm.value;
+    const duration = await this.getTrackDuration();
+
+    if (this.editedTrack) {
+      // Update
+    } else {
+      // Creation
+      const track: Track = {
+        ...trackData,
+        id: `tack-${Date.now()}-${Math.random().toString(36)}`,
+        duration: duration,
+        creationDate: new Date(),
+      }
+    }
+
+  }
+
+  getTrackDuration(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio();
+      const objectUrl = URL.createObjectURL(this.trackFile!);
+
+      audio.src = objectUrl;
+
+      audio.addEventListener('loadedmetadata', () => {
+        const duration = audio.duration;
+        URL.revokeObjectURL(objectUrl);
+        resolve(duration);
+      });
+
+      // Handle any errors
+      audio.addEventListener('error', (error) => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Failed to load audio metadata'));
+      });
+    });
+  }
+
+
+
+  // Validators
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.taskForm.get(fieldName);
+    const field = this.trackForm.get(fieldName);
     return field ? (field.invalid && (field.dirty || field.touched)) : false;
   }
 
@@ -49,38 +106,58 @@ export class TrackFormComponent {
   }
 
 
-  fileValidator(control: AbstractControl): ValidationErrors | null {
-    const allowedTypes = ['audio/mp3', 'audio/wav', 'audio/ogg'];
-    const file = control.value as File;
-    if (file && !allowedTypes.includes(file.type)) {
-      return { invalidFileType: true };
+  fileValidator(): ValidationErrors | null {
+    const allowedTypes = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg'];
+    const maxSize = 15 * 1024 * 1024;
+    const file = this.trackFile;
+
+    if (file) {
+      if (!allowedTypes.includes(file.type)) {
+        return { invalidFileType: true };
+      }
+      if (file.size > maxSize) {
+        return { fileTooLarge: true };
+      }
+
     }
     return null;
   }
 
 
-  coverValidator(control: AbstractControl): ValidationErrors | null {
+  coverValidator(): ValidationErrors | null {
     const allowedTypes = ['image/png', 'image/jpeg'];
     const maxSize = 15 * 1024 * 1024;
-    const file = control.value as File;
+    const file = this.coverFile;
+
     if (file) {
       if (!allowedTypes.includes(file.type)) {
         return { invalidCoverType: true };
       }
-      if (file.size > maxSize) {
+      if (file!.size > maxSize) {
         return { fileTooLarge: true };
       }
     }
     return null;
   }
 
-  ngOnDestroy() {
-    if (this.editedTrack) {
-      this.store.dispatch(TrackActions.clearEditedTrack());
+  onFileChange(event: Event, field: string) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      switch (field) {
+        case 'file':
+          this.trackFile = input.files[0];
+          this.trackForm.get('file')?.updateValueAndValidity();
+          break;
+        case 'cover':
+          this.coverFile = input.files[0];
+          this.trackForm.get('cover')?.updateValueAndValidity();
+          break;
+        default:
+          throw new Error("unknown property " + field)
+      }
     }
-
-    this.subscription.unsubscribe();
   }
+
 
   // Pupup methods
   closeForm() {
@@ -93,5 +170,14 @@ export class TrackFormComponent {
     if (target.closest('.task-popup-background') && !target.closest('.task-form-container')) {
       this.closeForm();
     }
+  }
+
+  // Unsubscribe and empty edited task if it exists
+  ngOnDestroy() {
+    if (this.editedTrack) {
+      this.store.dispatch(TrackActions.clearEditedTrack());
+    }
+
+    this.subscription.unsubscribe();
   }
 }

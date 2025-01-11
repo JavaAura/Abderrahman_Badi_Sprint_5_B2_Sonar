@@ -14,7 +14,7 @@ export class LibraryComponent {
   isOpen: boolean = false;
   track: Track = {
     id: '1',
-    title: "qsdqsdqsd",
+    name: "qsdqsdqsd",
     author: 'qsdqsdqsd',
     duration: 200,
     category: MusicCategory.POP,

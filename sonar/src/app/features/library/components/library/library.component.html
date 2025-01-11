@@ -9,7 +9,7 @@
         <div class="flex flex-col gap-1 items-center">
             <div *ngFor="let item of counterArray ; let  i = index" (click)="editTrack(track)"
                 [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border bg-white border-b-gray-400' : 'bg-gray-primary'"
-                class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-xs pl-2 md:px-4">
+                class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-sm pl-2 md:px-4">
                 <div class="group-hover:visible invisible flex items-center justify-end w-[8%] md:w-[5%]">
                     <button class="hover:bg-gray-200 rounded-md p-1">
                         <svg class="stroke-red-custom w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">

@@ -6,6 +6,9 @@ import { LibraryComponent } from './components/library/library.component';
 import { ButtonPrimaryComponent } from '../../shared/button-primary/button-primary.component';
 import { TrackFormComponent } from '../../shared/track-form/track-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TrackSettingsComponent } from './components/track-settings/track-settings.component';
+import { TrackCoversPopupComponent } from './components/track-covers-popup/track-covers-popup.component';
+import { TrackFilesPopupComponent } from './components/track-files-popup/track-files-popup.component';
 
 
 @NgModule({
@@ -13,6 +16,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     LibraryComponent,
     ButtonPrimaryComponent,
     TrackFormComponent,
+    TrackSettingsComponent,
+    TrackCoversPopupComponent,
+    TrackFilesPopupComponent,
   ],
   imports: [
     CommonModule,

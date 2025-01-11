@@ -8,7 +8,7 @@ export class IndexedDbService {
   private readonly dbName = 'MusicStreamDB';
   private readonly dbVersion = 1;
 
-  constructor() {}
+  constructor() { }
 
   async initialize(): Promise<void> {
     if (this.db) {
@@ -22,18 +22,19 @@ export class IndexedDbService {
         const db = request.result;
 
         if (!db.objectStoreNames.contains('tracks')) {
-          db.createObjectStore('tracks', { keyPath: 'id', autoIncrement: true });
+          db.createObjectStore('tracks', { keyPath: 'id' });
         }
         if (!db.objectStoreNames.contains('playlists')) {
-          db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+          db.createObjectStore('playlists', { keyPath: 'id' });
         }
         if (!db.objectStoreNames.contains('files')) {
-          db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+          db.createObjectStore('files', { keyPath: 'id' });
         }
       };
 
       request.onsuccess = () => {
         this.db = request.result;
+        console.log("IndexedDB initialized")
         resolve();
       };
 
@@ -44,7 +45,7 @@ export class IndexedDbService {
     });
   }
 
-  private getTransaction(storeName: string, mode: IDBTransactionMode): IDBObjectStore {
+  public getTransaction(storeName: string, mode: IDBTransactionMode): IDBObjectStore {
     if (!this.db) {
       throw new Error('IndexedDB is not initialized');
     }
