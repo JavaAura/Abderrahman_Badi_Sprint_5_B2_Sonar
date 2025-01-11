@@ -1,4 +1,4 @@
-<div class="relative h-10 w-10">
+<div class="relative h-6 w-6 flex items-center justify-center">
     <button (click)="isOpen = !isOpen"
         class="hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center volume-button">
         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
@@ -9,7 +9,7 @@
                 stroke-width="2" stroke-linecap="round" />
         </svg>
     </button>
-    <div class="absolute h-12 w-64 bg-gray-secondary -top-12 right-0 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-md flex items-center justify-around gap-2 px-4 py-2 transition-all duration-300 volume-container"
+    <div class="absolute h-[62px] w-72 bg-gray-secondary -top-20 -right-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-md flex items-center justify-around gap-2 px-6 py-2 transition-all duration-300 volume-container"
         [ngClass]="isOpen ? 'opacity-100 z-50' : 'opacity-0'">
         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
             <path

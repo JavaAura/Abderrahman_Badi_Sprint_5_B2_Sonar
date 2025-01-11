@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { ScreenService } from '../../services/screen.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-playlist-menu',
@@ -9,18 +10,21 @@ import { Subscription } from 'rxjs';
 })
 export class PlaylistMenuComponent {
   isOpen: boolean = false;
+  router: Router = new Router();
   private subscription: Subscription = new Subscription();
 
   constructor(private screenService: ScreenService) { }
 
   openMenu() {
-    this.isOpen = true;
-  }
+    this.isOpen = !this.isOpen;
+    this.router.navigate(["playlists"]);
+    }
 
   ngOnInit() {
     this.subscription = this.screenService.isMediumScreen$.subscribe(isMedium => {
       this.isOpen = isMedium;
     });
+    this.isOpen = false;
   }
 
   ngOnDestroy() {

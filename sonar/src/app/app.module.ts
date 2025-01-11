@@ -9,17 +9,25 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CoreModule } from './core/core.module';
 import { TrackModule } from './features/track/track.module';
 import { PlaylistModule } from './features/playlist/playlist.module';
+import { LibraryModule } from './features/library/library.module';
+import { HomeModule } from './features/home/home.module';
+import { RouterLink } from '@angular/router';
+import { ButtonPrimaryComponent } from './shared/button-primary/button-primary.component';
+import { TrackFormComponent } from './shared/track-form/track-form.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     CoreModule,
+    HomeModule,
     TrackModule,
     PlaylistModule,
+    LibraryModule,
     BrowserModule,
     AppRoutingModule,
+    RouterLink,
     StoreModule.forRoot({}, {}),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })

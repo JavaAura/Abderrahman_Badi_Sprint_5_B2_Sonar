@@ -8,6 +8,9 @@ export const tracksFeatureKey = 'tracks';
 export interface State extends EntityState<Track> {
   message: string | null;
   status: 'pending' | 'loading' | 'success' | 'error';
+  editedTrack: Track | null;
+  uploadStatus: 'idle' | 'uploading' | 'success' | 'error';
+  uploadError: string | null;
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
@@ -15,10 +18,22 @@ export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
 export const initialState: State = adapter.getInitialState({
   message: null,
   status: 'pending',
+  editedTrack: null,
+  uploadStatus: 'idle',
+  uploadError: null
 });
 
 export const reducer = createReducer(
   initialState,
+
+  on(TrackActions.editTrack, (state, { track }) => ({
+    ...state,
+    editedTrack: track  // Destructure track from action payload
+  })),
+  on(TrackActions.clearEditedTrack, (state) => ({
+    ...state,
+    editedTrack: null  // Clear the track
+  })),
 
   on(TrackActions.loadTracks, (state) => ({
     ...state,
@@ -33,6 +48,24 @@ export const reducer = createReducer(
     ...state,
     status: 'error' as const,
     message: error
+  })),
+
+  on(TrackActions.uploadTrackFiles, (state) => ({
+    ...state,
+    uploadStatus: 'uploading' as const,
+    uploadError: null,
+  })),
+
+  on(TrackActions.uploadTrackFilesSuccess, (state) => ({
+    ...state,
+    uploadStatus: 'success' as const,
+    uploadError: null,
+  })),
+
+  on(TrackActions.uploadTrackFilesFailure, (state, { error }) => ({
+    ...state,
+    uploadStatus: 'error' as const,
+    uploadError: error,
   })),
 
 
@@ -107,6 +140,19 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.message
     ),
+    selectEditedTrack: createSelector(
+      selectTracksState,
+      (state: State) => state.editedTrack
+    ),
+    selectUploadStatus: createSelector(
+      selectTracksState,
+      (state: State) => state.uploadStatus
+    ),
+    selectUploadError: createSelector(
+      selectTracksState,
+      (state: State) => state.uploadError
+    ),
+
   }),
 });
 
@@ -117,4 +163,7 @@ export const {
   selectTotal,
   selectStatus,
   selectMessage,
+  selectEditedTrack,
+  selectUploadStatus,
+  selectUploadError,
 } = tracksFeature;

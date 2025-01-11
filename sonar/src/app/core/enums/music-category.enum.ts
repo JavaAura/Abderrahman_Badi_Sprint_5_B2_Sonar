@@ -1,10 +1,9 @@
 export enum MusicCategory {
-    POP = 'pop',
-    ROCK = 'rock',
-    RAP = 'rap',
-    CHAABI = 'cha3bi',
-    JAZZ = 'jazz',
-    CLASSICAL = 'classical',
-    RNB = 'rnb',
-    ELECTRONIC = 'electronic'
+    POP = 'Pop',
+    ROCK = 'Rock',
+    RAP = 'Rap',
+    JAZZ = 'Jazz',
+    CLASSICAL = 'Classical',
+    RNB = 'RNB',
+    ELECTRONIC = 'Electronic'
 }
