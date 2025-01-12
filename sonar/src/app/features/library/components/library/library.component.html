@@ -57,7 +57,7 @@
                         <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.duration | timeFormat }}</p>
                     </div>
                     <div class="flex items-center justify-end w-[6%] md:w-[3%]">
-                        <app-track-settings [track]="track" (open)="editTrack(track)" class="relative"/>
+                        <app-track-settings [track]="track" (open)="editTrack(track)" class="relative !text-gray-800"/>
                     </div>
                 </div>
             </div>

@@ -18,6 +18,7 @@ export interface State extends EntityState<Track> {
   trackCovers: StoredFile[];
   loadTrackAudioStatus: 'idle' | 'loading' | 'success' | 'error';
   loadTrackCoverStatus: 'idle' | 'loading' | 'success' | 'error';
+  loadFilesStatus: 'idle' | 'loading' | 'success' | 'error';
   error: string | null;
   activeTrack: Track | null;
 
@@ -38,6 +39,7 @@ export const initialState: State = adapter.getInitialState({
   activeTrack: null,
   loadTrackAudioStatus: 'idle',
   loadTrackCoverStatus: 'idle',
+  loadFilesStatus: 'idle',
   error: null
 });
 
@@ -117,6 +119,23 @@ export const reducer = createReducer(
   })),
 
 
+
+  on(TrackActions.uploadTrackFile, (state) => ({
+    ...state,
+    loadFilesStatus: 'loading' as const
+  })),
+  on(TrackActions.uploadTrackFileSuccess, (state, { file }) => ({
+    ...state,
+    loadFilesStatus: 'success' as const,
+    trackAudios: [...state.trackAudios, file]
+  })),
+  on(TrackActions.uploadTrackFileFailure, (state, { error }) => ({
+    ...state,
+    loadFilesStatus: 'error' as const,
+    error: error
+  })),
+
+
   on(TrackActions.loadTrackAudio, (state) => ({
     ...state,
     loadTrackAudioStatus: 'loading' as const
@@ -146,6 +165,36 @@ export const reducer = createReducer(
     loadTrackCoverStatus: 'error' as const,
   })),
 
+
+
+  on(TrackActions.loadTrackAudios, (state) => ({
+    ...state,
+    loadFilesStatus: 'loading' as const
+  })),
+  on(TrackActions.loadTrackAudiosSuccess, (state, { files }) => ({
+    ...state,
+    trackAudios: files,
+    loadFilesStatus: 'success' as const
+  })),
+  on(TrackActions.loadTrackAudiosFailure, (state, { error }) => ({
+    ...state,
+    loadFilesStatus: 'error' as const,
+    error: error
+  })),
+  on(TrackActions.loadTrackCovers, (state) => ({
+    ...state,
+    loadFilesStatus: 'loading' as const
+  })),
+  on(TrackActions.loadTrackCoversSuccess, (state, { files }) => ({
+    ...state,
+    trackCovers: files,
+    loadFilesStatus: 'success' as const
+  })),
+  on(TrackActions.loadTrackCoversFailure, (state, { error }) => ({
+    ...state,
+    error: error,
+    loadFilesStatus: 'error' as const,
+  })),
 
 
 
@@ -256,6 +305,10 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.loadTrackCoverStatus
     ),
+    selectLoadFilesStatus: createSelector(
+      selectTracksState,
+      (state: State) => state.loadFilesStatus
+    ),
     selectActiveTrack: createSelector(
       selectTracksState,
       (state: State) => state.activeTrack
@@ -284,6 +337,7 @@ export const {
   selectUploadError,
   selectTrackAudioStatus,
   selectTrackCoverStatus,
+  selectLoadFilesStatus,
   selectActiveTrack,
   selectError,
 } = tracksFeature;

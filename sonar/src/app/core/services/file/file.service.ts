@@ -54,7 +54,7 @@ export class FileService {
     }
   }
 
-  private async storeFile(fileData: StoredFile): Promise<boolean> {
+  async storeFile(fileData: StoredFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
         const store = this.db.getTransaction(this.storeName, 'readwrite');
@@ -85,9 +85,8 @@ export class FileService {
             const storedFile = cursor.value as StoredFile;
             if (storedFile.type === fileType) {
               files.push(cursor.value);
-            } else {
-              cursor.continue();
             }
+            cursor.continue();
           } else {
             resolve(files);
           }
@@ -127,6 +126,35 @@ export class FileService {
         };
 
         request.onerror = () => reject(request.error);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  async updateFileActiveStatus(fileId: string, trackId: string): Promise<void> {
+    await this.db.initialize();
+
+    return new Promise((resolve, reject) => {
+      try {
+        this.getFilesByTrackId(trackId, FileType.AUDIO).then(files => {
+          const store = this.db.getTransaction(this.storeName, 'readwrite');
+
+          const updatePromises = files.map(file => {
+            return new Promise<void>((resolveUpdate, rejectUpdate) => {
+              const updateRequest = store.put({
+                ...file,
+                active: file.id === fileId
+              });
+              updateRequest.onsuccess = () => resolveUpdate();
+              updateRequest.onerror = () => rejectUpdate(updateRequest.error);
+            });
+          });
+
+          Promise.all(updatePromises)
+            .then(() => resolve())
+            .catch(error => reject(error));
+        });
       } catch (error) {
         reject(error);
       }

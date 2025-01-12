@@ -78,6 +78,50 @@ export class TrackEffects {
     );
   });
 
+
+  loadTrackAudios$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TrackActions.loadTrackAudios),
+      mergeMap(({ trackId }) =>
+        from(this.fileService.getFilesByTrackId(trackId, FileType.AUDIO)).pipe(
+          delay(500),
+          map((files) => {
+            if (files) {
+              return TrackActions.loadTrackAudiosSuccess({ files });
+            } else {
+              return TrackActions.loadTrackAudiosFailure({ error: 'File not found' });
+            }
+          }),
+          catchError((error) =>
+            of(TrackActions.loadTrackAudiosFailure({ error: error.message }))
+          )
+        )
+      )
+    );
+  });
+
+  loadTrackCovers$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TrackActions.loadTrackCovers),
+      mergeMap(({ trackId }) =>
+        from(this.fileService.getFilesByTrackId(trackId, FileType.COVER)).pipe(
+          delay(500),
+          map((files) => {
+            if (files) {
+              return TrackActions.loadTrackCoversSuccess({ files });
+            } else {
+              return TrackActions.loadTrackCoversSuccess({ files: [] });
+            }
+          }),
+          catchError((error) =>
+            of(TrackActions.loadTrackCoversFailure({ error: error.message }))
+          )
+        )
+      )
+    );
+  });
+
+
   addTrack$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TrackActions.addTrack),
@@ -106,6 +150,27 @@ export class TrackEffects {
             const errorMessage =
               error instanceof Error ? error.message : 'An unknown error occurred';
             return of(TrackActions.uploadTrackFilesFailure({ error: errorMessage }));
+          })
+        )
+      )
+    )
+  );
+
+  uploadAudioFile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TrackActions.uploadTrackFile),
+      mergeMap(({ file }) =>
+        from(this.fileService.storeFile(file)).pipe(
+          map((success) => {
+            if (success) {
+              return TrackActions.uploadTrackFileSuccess({ file });
+            }
+            return TrackActions.uploadTrackFileFailure({ error: 'Failed to store files' });
+          }),
+          catchError((error: unknown) => {
+            const errorMessage =
+              error instanceof Error ? error.message : 'An unknown error occurred';
+            return of(TrackActions.uploadTrackFileFailure({ error: errorMessage }));
           })
         )
       )

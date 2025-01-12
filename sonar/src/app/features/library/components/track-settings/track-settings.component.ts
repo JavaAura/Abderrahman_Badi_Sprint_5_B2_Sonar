@@ -10,6 +10,8 @@ export class TrackSettingsComponent {
   @Input() track!: Track;
   @Output() open = new EventEmitter<Track>();
   isOpen: boolean = false
+  isOpenFilesPopup: boolean = false;
+  isOpenCoversPopup: boolean = false;
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent): void {
@@ -19,8 +21,15 @@ export class TrackSettingsComponent {
     }
   }
 
-
   editTrack() {
     this.open.emit(this.track);
+  }
+
+  closeFilesPopup(){
+    this.isOpenFilesPopup = false;
+  }
+
+  closeCoversPopup(){
+    this.isOpenCoversPopup = false;
   }
 }

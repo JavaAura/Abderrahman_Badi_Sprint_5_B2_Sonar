@@ -1,1 +1,13 @@
-<p>track-covers-popup works!</p>
+<div class="fixed w-full h-full top-0 left-0 items-center flex justify-center z-50 track-popup-background">
+    <div class="bg-white w-11/12 md:w-7/12 h-fit shadow-xl flex flex-col items-center overflow-hidden rounded-md md:h-fit track-container">
+        <div class="w-full h-6">
+            <div class="flex justify-end h-full rounded-tr-md rounded-tl-md">
+                <p (click)="closePopup()" class="text-xl text-gray-700 font-bold cursor-pointer text-center mr-1">&times;</p>
+            </div>
+        </div>
+        <div
+            class="flex flex-col items-center justify-between gap-5 px-[5%] h-[75vh] w-[96%] sm:w-[98%] md:w-[97%] lg:w-[98.5%] mx-auto overflow-x-hidden overflow-y-auto mt-2 py-10">
+            <p>track covers</p>
+        </div>
+    </div>
+</div>

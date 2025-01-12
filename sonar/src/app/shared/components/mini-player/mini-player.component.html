@@ -1,0 +1,11 @@
+<div class="group flex items-center justify-between gap-2 border-b-0 shadow-sm border bg-white border-b-gray-400 rounded-lg hover:bg-gray-50 p-1 mb-2">
+    <div class="flex items-center gap-3 flex-1">
+        <input type="radio" [checked]="file.active" name="audio" (change)="setAsActive()" class="w-4 h-4 cursor-pointer">
+        <span class="flex-1">{{ file.name }}</span>
+    </div>
+
+    <audio controls class="max-w-[250px]">
+        <source [src]="audioUrl" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</div>

@@ -11,6 +11,11 @@ export const TrackActions = createActionGroup({
     'Upload Track Files Success': emptyProps(),
     'Upload Track Files Failure': props<{ error: string }>(),
 
+    'Upload Track File': props<{ file: StoredFile }>(),
+    'Upload Track File Success': props<{ file: StoredFile }>(),
+    'Upload Track File Failure': props<{ error: string }>(),
+
+
     'Load Track Audio': props<{ trackId: string }>(),
     'Load Track Audio Success': props<{ file: StoredFile }>(),
     'Load Track Audio Failure': props<{ error: string }>(),
@@ -18,6 +23,12 @@ export const TrackActions = createActionGroup({
     'Load Track Cover Success': props<{ file: StoredFile | null }>(),
     'Load Track Cover Failure': props<{ error: string }>(),
 
+    'Load Track Audios': props<{ trackId: string }>(),
+    'Load Track Audios Success': props<{ files: StoredFile[] }>(),
+    'Load Track Audios Failure': props<{ error: string }>(),
+    'Load Track Covers': props<{ trackId: string }>(),
+    'Load Track Covers Success': props<{ files: StoredFile[] | [] }>(),
+    'Load Track Covers Failure': props<{ error: string }>(),
 
     'Edit Track': props<{ track: Track }>(),
     'Clear Edited Track': emptyProps(),
