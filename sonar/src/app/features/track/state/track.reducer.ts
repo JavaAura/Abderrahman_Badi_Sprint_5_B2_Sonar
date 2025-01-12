@@ -59,6 +59,10 @@ export const reducer = createReducer(
     ...state,
     activeTrack: track,
   })),
+  on(TrackActions.clearTrack, (state) => ({
+    ...state,
+    activeTrack: null,
+  })),
 
 
 

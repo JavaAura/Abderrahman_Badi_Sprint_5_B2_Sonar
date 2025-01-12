@@ -1,6 +1,6 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { Track } from '../../../../features/track/state/track.model';
 import { selectActiveTrack, selectAll, selectError, selectTrackAudio, selectTrackAudioStatus, selectTrackCover, selectTrackCoverStatus } from '../../../../features/track/state/track.reducer';
 import { isPlatformBrowser } from '@angular/common';
@@ -62,6 +62,9 @@ export class PlayerComponent {
   constructor(private store: Store, @Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
       this.audio = new Audio();
+      this.audio.addEventListener('ended', () => {
+        this.playNextTrack();
+      })
     }
   }
 
@@ -78,8 +81,6 @@ export class PlayerComponent {
     });
     this.trackCover$.subscribe((coverFile) => {
       if (coverFile) {
-        console.log(coverFile);
-
         this.onCoverFileChange(coverFile);
       }
     });
@@ -107,6 +108,11 @@ export class PlayerComponent {
     this.timerId = setInterval(() => {
       this.currentTime = this.currentTime + 0.1
     }, 100);
+
+    // If the user changed the volume before playing a track     
+    this.audio.volume = this.volume / 100
+
+    // Play the track
     this.audio.play();
   }
 
@@ -159,9 +165,52 @@ export class PlayerComponent {
     this.audio.currentTime = floatValue;
   }
 
-  set volume(value: number){
-    if(this.audio.src){
-      this.audio.volume = value/100
+  playNextTrack() {
+    combineLatest([this.tracks$, this.activeTrack$])
+      .pipe(
+        take(1)
+      )
+      .subscribe(([tracks, activeTrack]) => {
+        if (!activeTrack || !tracks || tracks.length === 0) return;
+        
+        const currentIndex = tracks.findIndex(track => track.id === activeTrack.id);
+        const nextIndex = (currentIndex + 1) % tracks.length;
+        const nextTrack = tracks[nextIndex];
+
+        if (nextTrack) {
+          this.store.dispatch(TrackActions.playTrack({ track: nextTrack }));
+        }
+      });
+  }
+
+  playPreviousTrack() {
+    combineLatest([this.tracks$, this.activeTrack$])
+      .pipe(
+        take(1)
+      )
+      .subscribe(([tracks, activeTrack]) => {
+        if (!activeTrack || !tracks || tracks.length === 0) return;
+
+        const currentIndex = tracks.findIndex(track => track.id === activeTrack.id);
+        const previousIndex = (currentIndex - 1) % tracks.length;
+        const nextTrack = tracks[previousIndex];
+
+        if (nextTrack) {
+          this.store.dispatch(TrackActions.playTrack({ track: nextTrack }));
+        }
+      });
+  }
+
+  get volume(){
+    return this._volume;
+  }
+
+  set volume(value: number) {
+    this._volume = value;
+
+    // Live updates the audio volume
+    if (this.audio.src) {
+      this.audio.volume = value / 100
     }
   }
 }

@@ -5,5 +5,6 @@ export enum MusicCategory {
     JAZZ = 'Jazz',
     CLASSICAL = 'Classical',
     RNB = 'RNB',
-    ELECTRONIC = 'Electronic'
+    ELECTRONIC = 'Electronic',
+    METAL= 'Metal'
 }
