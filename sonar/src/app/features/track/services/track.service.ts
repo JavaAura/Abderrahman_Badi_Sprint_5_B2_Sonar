@@ -54,25 +54,39 @@ export class TrackService {
     });
   }
 
+  async getAllTracksByName(name: string): Promise<Track[]> {
+    await this.db.initialize();
+    return new Promise((resolve, reject) => {
+      const store = this.db.getTransaction(this.storeName, 'readonly');
+      const request = store.getAll();
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = (event) => {
+        console.error('Error retrieving all tracks:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
   async updateTrack(update: Update<Track>): Promise<Update<Track>> {
     await this.db.initialize();
     return new Promise((resolve, reject) => {
       const store = this.db.getTransaction(this.storeName, 'readwrite');
-  
+
       const request = store.get(update.id);
-  
+
       request.onsuccess = () => {
         const existingTrack = request.result;
         console.log(existingTrack);
-        
+
         if (existingTrack) {
           const updatedTrack = { ...existingTrack, ...update.changes };
-  
+
           const putRequest = store.put(updatedTrack);
 
           putRequest.onsuccess = () => {
             resolve({
-              id: updatedTrack.id,   
+              id: updatedTrack.id,
               changes: updatedTrack
             });
           };
@@ -84,14 +98,14 @@ export class TrackService {
           reject(new Error('Track not found'));
         }
       };
-  
+
       request.onerror = (error) => {
         console.error('Error retrieving track for update:', error);
         reject(error);
       };
     });
   }
-  
+
 
   async deleteTrackById(id: string): Promise<string> {
     await this.db.initialize();

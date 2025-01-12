@@ -82,6 +82,23 @@ export const reducer = createReducer(
   })),
 
 
+  on(TrackActions.searchTracks, (state) => ({
+    ...state,
+    status: 'loading' as const
+  })),
+  on(TrackActions.searchTracksSuccess, (state, { tracks }) => ({
+    ...adapter.setAll(tracks, state),
+    status: 'success' as const,
+    message: null
+  })),
+  on(TrackActions.searchTracksFailure, (state, { error }) => ({
+    ...state,
+    status: 'error' as const,
+    message: error
+  })),
+
+
+
 
   on(TrackActions.uploadTrackFiles, (state) => ({
     ...state,

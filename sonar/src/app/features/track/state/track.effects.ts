@@ -23,6 +23,18 @@ export class TrackEffects {
     );
   });
 
+  searchTracks$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TrackActions.searchTracks),
+      mergeMap(({ name }) => from(this.trackService.getAllTracksByName(name))
+        .pipe(
+          delay(2000),
+          map(tracks => TrackActions.searchTracksSuccess({ tracks })),
+          catchError(error => of(TrackActions.searchTracksFailure({ error })))
+        ))
+    );
+  });
+
 
   loadTrackAudio$ = createEffect(() => {
     return this.actions$.pipe(

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class IndexedDbService {
   private db: IDBDatabase | null = null;
   private readonly dbName = 'MusicStreamDB';
-  private readonly dbVersion = 1;
+  private readonly dbVersion = 3;
 
   constructor() { }
 
@@ -20,12 +20,20 @@ export class IndexedDbService {
 
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db = request.result;
+        if (db.objectStoreNames.contains('tracks')) {
+          const target = event.target as IDBOpenDBRequest;
+          const trackStore = target.transaction!.objectStore('tracks');
 
+          if (!trackStore.indexNames.contains('name')) {
+            trackStore.createIndex('name', 'name', { unique: false });
+          }
+        }
         if (!db.objectStoreNames.contains('tracks')) {
-          db.createObjectStore('tracks', { keyPath: 'id' });
+          const store = db.createObjectStore('tracks', { keyPath: 'id' });
+          store.createIndex('name', 'name', { unique: false });
         }
         if (!db.objectStoreNames.contains('playlists')) {
-          db.createObjectStore('playlists', { keyPath: 'id' });
+          const store = db.createObjectStore('playlists', { keyPath: 'id' });
         }
         if (!db.objectStoreNames.contains('files')) {
           const store = db.createObjectStore('files', { keyPath: 'id' });
