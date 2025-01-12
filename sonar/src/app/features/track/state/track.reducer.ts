@@ -2,6 +2,7 @@ import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Track } from './track.model';
 import { TrackActions } from './track.actions';
+import { StoredFile } from '../../../core/services/file/file.service';
 
 export const tracksFeatureKey = 'tracks';
 
@@ -11,6 +12,13 @@ export interface State extends EntityState<Track> {
   editedTrack: Track | null;
   uploadStatus: 'idle' | 'uploading' | 'success' | 'error';
   uploadError: string | null;
+  trackAudio: StoredFile | null;
+  trackCover: StoredFile | null;
+  trackAudios: StoredFile[];
+  trackCovers: StoredFile[];
+  loadTrackStatus: 'idle' | 'loading' | 'success' | 'error';
+  activeTrack: Track | null;
+
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
@@ -20,7 +28,13 @@ export const initialState: State = adapter.getInitialState({
   status: 'pending',
   editedTrack: null,
   uploadStatus: 'idle',
-  uploadError: null
+  uploadError: null,
+  trackAudio: null,
+  trackCover: null,
+  trackAudios: [],
+  trackCovers: [],
+  activeTrack: null,
+  loadTrackStatus: 'idle',
 });
 
 export const reducer = createReducer(
@@ -34,6 +48,15 @@ export const reducer = createReducer(
     ...state,
     editedTrack: null  // Clear the track
   })),
+
+
+
+  on(TrackActions.playTrack, (state, { track }) => ({
+    ...state,
+    activeTrack: track,
+  })),
+
+
 
   on(TrackActions.loadTracks, (state) => ({
     ...state,
@@ -50,23 +73,54 @@ export const reducer = createReducer(
     message: error
   })),
 
+
+
   on(TrackActions.uploadTrackFiles, (state) => ({
     ...state,
     uploadStatus: 'uploading' as const,
     uploadError: null,
   })),
-
   on(TrackActions.uploadTrackFilesSuccess, (state) => ({
     ...state,
     uploadStatus: 'success' as const,
     uploadError: null,
   })),
-
   on(TrackActions.uploadTrackFilesFailure, (state, { error }) => ({
     ...state,
     uploadStatus: 'error' as const,
     uploadError: error,
   })),
+
+
+  on(TrackActions.loadTrackAudio, (state) => ({
+    ...state,
+    status: 'loading' as const
+  })),
+  on(TrackActions.loadTrackAudioSuccess, (state, { file }) => ({
+    ...state,
+    trackAudio: file,
+    status: 'success' as const
+  })),
+  on(TrackActions.loadTrackAudioFailure, (state, { error }) => ({
+    ...state,
+    status: 'loading' as const,
+    error: error
+  })),
+  on(TrackActions.loadTrackCover, (state) => ({
+    ...state,
+  })),
+  on(TrackActions.loadTrackCoverSuccess, (state, { file }) => ({
+    ...state,
+    trackCover: file,
+    status: 'success' as const
+  })),
+  on(TrackActions.loadTrackCoverFailure, (state, { error }) => ({
+    ...state,
+    status: 'loading' as const,
+    error: error
+  })),
+
+
 
 
   on(TrackActions.addTrack, (state) => ({
@@ -152,6 +206,22 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.uploadError
     ),
+    selectTrackAudio: createSelector(
+      selectTracksState,
+      (state: State) => state.trackAudio
+    ),
+    selectTrackCover: createSelector(
+      selectTracksState,
+      (state: State) => state.trackCover
+    ),
+    selectTrackAudios: createSelector(
+      selectTracksState,
+      (state: State) => state.trackAudios
+    ),
+    selectTrackCovers: createSelector(
+      selectTracksState,
+      (state: State) => state.trackCovers
+    ),
 
   }),
 });
@@ -161,6 +231,10 @@ export const {
   selectEntities,
   selectAll,
   selectTotal,
+  selectTrackAudio,
+  selectTrackCover,
+  selectTrackAudios,
+  selectTrackCovers,
   selectStatus,
   selectMessage,
   selectEditedTrack,

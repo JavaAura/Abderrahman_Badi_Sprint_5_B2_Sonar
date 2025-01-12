@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'timeFormat'
+  name: 'timeFormatPlayer'
 })
-export class TimeFormatPipe implements PipeTransform {
+export class TimeFormatPlayerPipe implements PipeTransform {
 
   transform(seconds: number): string {
     if (!seconds && seconds !== 0) return '';
@@ -11,11 +11,11 @@ export class TimeFormatPipe implements PipeTransform {
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
 
-    const hoursString = hours == 0 ? '' : `${this.pad(hours)}:` ;
+    const hoursString = this.pad(hours) ;
     const minutesString = this.pad(minutes);
     const secondsString = this.pad(secs);
 
-    return `${hoursString}${minutesString}:${secondsString}`;
+    return `${hoursString}:${minutesString}:${secondsString}`;
   }
   
   private pad(value: number): string {

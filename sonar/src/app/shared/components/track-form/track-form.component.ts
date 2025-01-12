@@ -6,6 +6,7 @@ import { Observable, Subscribable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectEditedTrack } from '../../../features/track/state/track.reducer';
 import { TrackActions } from '../../../features/track/state/track.actions';
+import { Update } from '@ngrx/entity';
 
 
 @Component({
@@ -33,10 +34,23 @@ export class TrackFormComponent {
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80)]],
       author: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       category: ['', [Validators.required, this.categoryValidator.bind(this)]],
-      file: ['', [Validators.required, this.fileValidator.bind(this)]],
+      file: ['', this.fileValidator.bind(this)],
       cover: ['', this.coverValidator.bind(this)]
     });
-    this.subscription = this.track$.subscribe((track) => this.editedTrack = track);
+    this.subscription = this.track$.subscribe((track) => {
+      this.editedTrack = track;
+      this.updateFileFieldValidation();
+    });
+  }
+
+  private updateFileFieldValidation() {
+    const fileControl = this.trackForm.get('file');
+    if (this.editedTrack) {
+      fileControl?.clearValidators();
+    } else {
+      fileControl?.setValidators([Validators.required, this.fileValidator.bind(this)]);
+    }
+    fileControl?.updateValueAndValidity();
   }
 
   ngOnInit() {
@@ -53,12 +67,25 @@ export class TrackFormComponent {
   async onSubmit() {
     if (this.trackForm.invalid) return;
     const trackData = this.trackForm.value;
-    const duration = await this.getTrackDuration();
 
     if (this.editedTrack) {
-      // Update
+      // Edit Track
+      const trackUpdate: Update<Track> = {
+        id: this.editedTrack.id,
+        changes: {
+          ...this.editedTrack,
+          ...trackData
+        }
+      };
+      console.log(trackUpdate);
+      this.store.dispatch(TrackActions.updateTrack({ track: trackUpdate }))
+
     } else {
-      // Creation
+      // Create Track
+
+      // Get the track duration
+      const duration = await this.getTrackDuration();
+
       const track: Track = {
         ...trackData,
         id: `tack-${Date.now()}-${Math.random().toString(36)}`,
@@ -76,6 +103,7 @@ export class TrackFormComponent {
       this.store.dispatch(TrackActions.addTrack({ track: track }))
     }
 
+    this.closeForm();
   }
 
   getTrackDuration(): Promise<number> {
@@ -117,7 +145,7 @@ export class TrackFormComponent {
 
   fileValidator(): ValidationErrors | null {
     const allowedTypes = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg'];
-    const maxSize = 15 * 1024 * 1024;
+    const maxSize = 17 * 1024 * 1024;
     const file = this.trackFile;
 
     if (file) {
@@ -134,11 +162,12 @@ export class TrackFormComponent {
 
 
   coverValidator(): ValidationErrors | null {
-    const allowedTypes = ['image/png', 'image/jpeg'];
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/avif', 'image/webp'];
     const maxSize = 15 * 1024 * 1024;
     const file = this.coverFile;
 
     if (file) {
+      console.log(file.type);    
       if (!allowedTypes.includes(file.type)) {
         return { invalidCoverType: true };
       }

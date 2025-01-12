@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IndexedDbService } from '../../../core/services/db/indexed-db.service';
 import { Track } from '../state/track.model';
+import { Update } from '@ngrx/entity';
 
 @Injectable({
   providedIn: 'root'
@@ -53,19 +54,44 @@ export class TrackService {
     });
   }
 
-  async updateTrack(track: Track): Promise<Track> {
+  async updateTrack(update: Update<Track>): Promise<Update<Track>> {
     await this.db.initialize();
     return new Promise((resolve, reject) => {
       const store = this.db.getTransaction(this.storeName, 'readwrite');
-      const request = store.put(track);
+  
+      const request = store.get(update.id);
+  
+      request.onsuccess = () => {
+        const existingTrack = request.result;
+        console.log(existingTrack);
+        
+        if (existingTrack) {
+          const updatedTrack = { ...existingTrack, ...update.changes };
+  
+          const putRequest = store.put(updatedTrack);
 
-      request.onsuccess = () => resolve(track);
-      request.onerror = (event) => {
-        console.error('Error updating track:', request.error);
-        reject(request.error);
+          putRequest.onsuccess = () => {
+            resolve({
+              id: updatedTrack.id,   
+              changes: updatedTrack
+            });
+          };
+          putRequest.onerror = (error) => {
+            console.error('Error updating track:', error);
+            reject(error);
+          };
+        } else {
+          reject(new Error('Track not found'));
+        }
+      };
+  
+      request.onerror = (error) => {
+        console.error('Error retrieving track for update:', error);
+        reject(error);
       };
     });
   }
+  
 
   async deleteTrackById(id: string): Promise<string> {
     await this.db.initialize();

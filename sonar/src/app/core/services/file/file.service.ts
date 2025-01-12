@@ -8,6 +8,7 @@ export interface StoredFile {
   type: FileType;
   name: string;
   trackId: string;
+  active: boolean;
 }
 
 @Injectable({
@@ -30,7 +31,8 @@ export class FileService {
         file: trackFile,
         type: FileType.AUDIO,
         name: trackFile.name,
-        trackId: trackId
+        trackId: trackId,
+        active: true
       });
 
       // Store cover file if it exists
@@ -40,7 +42,8 @@ export class FileService {
           file: coverFile,
           type: FileType.COVER,
           name: coverFile.name,
-          trackId: trackId
+          trackId: trackId,
+          active: true
         });
       }
 
@@ -65,14 +68,27 @@ export class FileService {
     });
   }
 
-  async getAllFiles(): Promise<StoredFile[]> {
+  async getFilesByTrackId(trackId: string): Promise<StoredFile[]> {
     await this.db.initialize();
+
     return new Promise((resolve, reject) => {
       try {
         const store = this.db.getTransaction(this.storeName, 'readonly');
-        const request = store.getAll();
+        const index = store.index('trackId');
+        const request = index.openCursor(IDBKeyRange.only(trackId));
 
-        request.onsuccess = () => resolve(request.result);
+        const files: StoredFile[] = [];
+
+        request.onsuccess = (event: Event) => {
+          const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+          if (cursor) {
+            files.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(files);
+          }
+        };
+
         request.onerror = () => reject(request.error);
       } catch (error) {
         reject(error);
@@ -80,14 +96,32 @@ export class FileService {
     });
   }
 
-  async getFile(fileId: string): Promise<StoredFile | null> {
+
+  async getFileByTrackId(trackId: string): Promise<StoredFile | null> {
     await this.db.initialize();
+
     return new Promise((resolve, reject) => {
       try {
         const store = this.db.getTransaction(this.storeName, 'readonly');
-        const request = store.get(fileId);
+        const index = store.index('trackId'); // Use the trackId index
 
-        request.onsuccess = () => resolve(request.result || null);
+        const request = index.openCursor(IDBKeyRange.only(trackId));
+
+        request.onsuccess = (event: Event) => {
+          const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+
+          if (cursor) {
+            const storedFile = cursor.value as StoredFile;
+            if (storedFile.active) {
+              resolve(storedFile);
+            } else {
+              cursor.continue();
+            }
+          } else {
+            resolve(null);
+          }
+        };
+
         request.onerror = () => reject(request.error);
       } catch (error) {
         reject(error);
