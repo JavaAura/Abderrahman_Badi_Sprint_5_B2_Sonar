@@ -12,8 +12,6 @@ import { PlaylistModule } from './features/playlist/playlist.module';
 import { LibraryModule } from './features/library/library.module';
 import { HomeModule } from './features/home/home.module';
 import { RouterLink } from '@angular/router';
-import { ButtonPrimaryComponent } from './shared/components/button-primary/button-primary.component';
-import { TrackFormComponent } from './shared/components/track-form/track-form.component';
 
 @NgModule({
   declarations: [

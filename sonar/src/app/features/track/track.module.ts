@@ -11,7 +11,7 @@ import { TrackComponent } from './components/track/track.component';
 
 @NgModule({
   declarations: [
-    TrackComponent
+    TrackComponent,
   ],
   imports: [
     CommonModule,

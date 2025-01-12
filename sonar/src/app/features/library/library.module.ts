@@ -10,6 +10,8 @@ import { TrackSettingsComponent } from './components/track-settings/track-settin
 import { TrackCoversPopupComponent } from './components/track-covers-popup/track-covers-popup.component';
 import { TrackFilesPopupComponent } from './components/track-files-popup/track-files-popup.component';
 import { SharedModule } from '../../shared/shared.module';
+import { MiniPlayerComponent } from '../../shared/components/mini-player/mini-player.component';
+import { TrackCoverComponent } from '../../shared/components/track-cover/track-cover.component';
 
 
 @NgModule({
@@ -20,6 +22,8 @@ import { SharedModule } from '../../shared/shared.module';
     TrackSettingsComponent,
     TrackCoversPopupComponent,
     TrackFilesPopupComponent,
+    MiniPlayerComponent,
+    TrackCoverComponent,
   ],
   imports: [
     SharedModule,
