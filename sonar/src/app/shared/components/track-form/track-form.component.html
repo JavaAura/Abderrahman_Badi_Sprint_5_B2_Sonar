@@ -2,7 +2,7 @@
     <div class="bg-white w-11/12 md:w-7/12 h-fit shadow-xl flex flex-col items-center overflow-hidden rounded-md md:h-fit task-form-container">
         <div class="w-full h-6">
             <div class="flex justify-end h-full rounded-tr-md rounded-tl-md">
-                <p (click)="closeForm()" class="text-1xl text-gray-700 font-bold cursor-pointer text-center mr-1">&times;</p>
+                <p (click)="closeForm()" class="text-xl text-gray-700 font-bold cursor-pointer text-center mr-1">&times;</p>
             </div>
         </div>
         <form [formGroup]="trackForm" (ngSubmit)="onSubmit()"
