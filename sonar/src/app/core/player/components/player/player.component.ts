@@ -13,7 +13,6 @@ import { TrackActions } from '../../../../features/track/state/track.actions';
   styleUrl: './player.component.scss'
 })
 export class PlayerComponent {
-  duration: number = 225;
   currentTime: number = 0;
   isPlaying: boolean = false;
   tracks$: Observable<Track[]> = this.store.select(selectAll);
@@ -56,6 +55,7 @@ export class PlayerComponent {
   audio!: HTMLAudioElement;
   url: string | null = null;
   private objectUrls: string[] = [];
+  private timerId: any = null // The interval
 
   constructor(private store: Store, @Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
@@ -83,7 +83,6 @@ export class PlayerComponent {
     });
   }
 
-
   onCoverFileChange(coverFile: StoredFile) {
     if (this.url) {
       URL.revokeObjectURL(this.url);
@@ -98,9 +97,16 @@ export class PlayerComponent {
     this.objectUrls.push(url);
     this.audio.src = url;
     this.isPlaying = true;
-    this.isPlaying = true;
-    this.audio.play();
+    this.currentTime = 0;
 
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
+    this.timerId = setInterval(() => {
+      this.currentTime = this.currentTime + 0.1
+    }, 100);
+
+    this.audio.play();
   }
 
   onActiveTrackChange(track: Track) {
@@ -113,11 +119,19 @@ export class PlayerComponent {
   togglePlayer() {
     if (this.isPlaying) {
       this.audio.pause();
+      // Pause the incrementing
+      if (this.timerId) {
+        clearInterval(this.timerId);
+        this.timerId = null;
+      }
     } else {
       this.audio.play();
+      // Resume incrementing currentTime
+      this.timerId = setInterval(() => {
+        this.currentTime = this.currentTime + 0.1
+      }, 100);
     }
     this.isPlaying = !this.isPlaying
-
   }
 
   updateValue(event: Event): void {
@@ -131,5 +145,13 @@ export class PlayerComponent {
 
     // Optionally update currentTime for live updates
     this.currentTime = parseFloat(value);
+  }
+
+
+  updateTrackProgress(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    const floatValue = parseFloat(value)
+    this.audio.currentTime = floatValue;
   }
 }
