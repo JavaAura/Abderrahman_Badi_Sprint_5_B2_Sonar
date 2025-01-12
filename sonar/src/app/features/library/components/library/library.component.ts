@@ -23,6 +23,7 @@ export class LibraryComponent {
   constructor(private store: Store) { }
 
   play(track: Track) {
+    this.store.dispatch(TrackActions.clearTrack());
     this.store.dispatch(TrackActions.playTrack({ track: track }));
   }
 

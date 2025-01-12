@@ -36,6 +36,7 @@ export const TrackActions = createActionGroup({
     'Delete Track Failure': props<{ error: string }>(),
 
     'Play Track': props<{ track: Track }>(),
+    'Clear Track': emptyProps(),
 
   }
 });
