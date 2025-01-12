@@ -1,5 +1,4 @@
-import { Component, HostListener } from '@angular/core';
-import { log } from 'console';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Component({
   selector: 'app-audio-button',
@@ -9,6 +8,8 @@ import { log } from 'console';
 export class AudioButtonComponent {
   volume: number = 100;
   isOpen: boolean = false;
+  @Output() setVolume = new EventEmitter<number>();
+
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent): void {
@@ -17,7 +18,7 @@ export class AudioButtonComponent {
       this.isOpen = false;
     }
   }
-  
+
   updateValue(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
@@ -27,5 +28,7 @@ export class AudioButtonComponent {
     parentElement?.style.setProperty('--value', value);
 
     this.volume = parseFloat(value);
+
+    this.setVolume.emit(this.volume)
   }
 }

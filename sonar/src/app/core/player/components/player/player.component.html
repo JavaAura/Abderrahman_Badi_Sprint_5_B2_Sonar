@@ -77,6 +77,6 @@
     </button>
   </div>
   <div class="w-[35%] sm:w-[40%] md:w-[46%] flex items-center justify-end">
-    <app-audio-button />
+    <app-audio-button (setVolume)="updateVolume($event)" />
   </div>
 </div>

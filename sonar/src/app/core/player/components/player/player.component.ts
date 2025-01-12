@@ -13,7 +13,9 @@ import { TrackActions } from '../../../../features/track/state/track.actions';
   styleUrl: './player.component.scss'
 })
 export class PlayerComponent {
+
   currentTime: number = 0;
+  private _volume: number = 100;
   isPlaying: boolean = false;
   tracks$: Observable<Track[]> = this.store.select(selectAll);
   activeTrack$: Observable<Track | null> = this.store.select(selectActiveTrack)
@@ -105,7 +107,6 @@ export class PlayerComponent {
     this.timerId = setInterval(() => {
       this.currentTime = this.currentTime + 0.1
     }, 100);
-
     this.audio.play();
   }
 
@@ -147,11 +148,20 @@ export class PlayerComponent {
     this.currentTime = parseFloat(value);
   }
 
+  updateVolume(volume: number) {
+    this.volume = volume;
+  }
 
   updateTrackProgress(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
     const floatValue = parseFloat(value)
     this.audio.currentTime = floatValue;
+  }
+
+  set volume(value: number){
+    if(this.audio.src){
+      this.audio.volume = value/100
+    }
   }
 }
