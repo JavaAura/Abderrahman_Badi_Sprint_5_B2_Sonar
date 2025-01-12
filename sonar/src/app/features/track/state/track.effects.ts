@@ -5,6 +5,7 @@ import { of, from } from 'rxjs';
 import { TrackActions } from './track.actions';
 import { FileService } from '../../../core/services/file/file.service';
 import { TrackService } from '../services/track.service';
+import { FileType } from '../../../core/enums/file-type.enum';
 
 
 @Injectable()
@@ -27,13 +28,34 @@ export class TrackEffects {
     return this.actions$.pipe(
       ofType(TrackActions.loadTrackAudio),
       mergeMap(({ trackId }) =>
-        from(this.fileService.getFileByTrackId(trackId)).pipe(
+        from(this.fileService.getFileByTrackId(trackId, FileType.AUDIO)).pipe(
           delay(500),
           map((file) => {
             if (file) {
               return TrackActions.loadTrackAudioSuccess({ file });
             } else {
               return TrackActions.loadTrackAudioFailure({ error: 'File not found' });
+            }
+          }),
+          catchError((error) =>
+            of(TrackActions.loadTrackAudioFailure({ error: error.message }))
+          )
+        )
+      )
+    );
+  });
+
+  loadTrackCover$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TrackActions.loadTrackCover),
+      mergeMap(({ trackId }) =>
+        from(this.fileService.getFileByTrackId(trackId, FileType.COVER)).pipe(
+          delay(500),
+          map((file) => {
+            if (file) {
+              return TrackActions.loadTrackCoverSuccess({ file });
+            } else {
+              return TrackActions.loadTrackCoverSuccess({ file: null });
             }
           }),
           catchError((error) =>
