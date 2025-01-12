@@ -5,16 +5,14 @@
     <input type="range" min="0" max="225" step="0.1" value="0" (input)="updateValue($event)">
     <div class='range-slider__progress'></div>
   </div>
-  <p class="text-[13px]">{{ duration | timeFormatPlayer }}</p>
+  <p *ngIf="activeTrack$ | async as track " class="text-[13px]">{{ track.duration| timeFormatPlayer }}</p>
+  <p *ngIf="!(activeTrack$ | async) as track " class="text-[13px]">00:00:00</p>
 </div>
 <div class="w-[99%] mx-auto h-[12vh] flex items-center justify-between pb-2">
   <div class="flex items-center gap-2 w-[35%] sm:w-[40%] md:w-[46%]">
-    <!-- ngIf="track.image" -->
-    <!-- // To-do -->
-    <!-- ngIf="!track.image" -->
-    <img src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
-    <p class="flex-shrink text-xl font-medium text-ellipsis overflow-hidden whitespace-nowrap">Path of Exile - Izaro's Labyrinth Interior
-      (aTension Remix) [ ezmp3.cc ]</p>
+      <img *ngIf="url" src="" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
+      <img *ngIf="!url" src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
+    <p class="flex-shrink text-xl font-medium text-ellipsis overflow-hidden whitespace-nowrap">{{ (activeTrack$ | async)?.name }}</p>
   </div>
   <div class="flex justify-center items-center gap-2 md:gap-4 w-[10%] md:w-[14%]">
     <button class="h-10 w-10 hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center">
@@ -27,7 +25,7 @@
           fill="#292D32" />
       </svg>
     </button>
-    <button (click)="isPlaying = !isPlaying" class="h-10 w-10 hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center">
+    <button (click)="togglePlayer()" class="h-10 w-10 hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center">
       <svg *ngIf="!isPlaying" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
         <rect width="24" height="24" fill="none" />
         <path fill-rule="evenodd" clip-rule="evenodd"

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, concatMap, mergeMap } from 'rxjs/operators';
-import { Observable, EMPTY, of, from } from 'rxjs';
+import { catchError, map, concatMap, mergeMap, delay } from 'rxjs/operators';
+import { of, from } from 'rxjs';
 import { TrackActions } from './track.actions';
 import { FileService } from '../../../core/services/file/file.service';
 import { TrackService } from '../services/track.service';
@@ -15,6 +15,7 @@ export class TrackEffects {
       ofType(TrackActions.loadTracks),
       mergeMap(() => from(this.trackService.getAllTracks())
         .pipe(
+          delay(2000),
           map(tracks => TrackActions.loadTracksSuccess({ tracks })),
           catchError(error => of(TrackActions.loadTracksFailure({ error })))
         ))
@@ -27,6 +28,7 @@ export class TrackEffects {
       ofType(TrackActions.loadTrackAudio),
       mergeMap(({ trackId }) =>
         from(this.fileService.getFileByTrackId(trackId)).pipe(
+          delay(500),
           map((file) => {
             if (file) {
               return TrackActions.loadTrackAudioSuccess({ file });
@@ -48,6 +50,7 @@ export class TrackEffects {
       mergeMap(({ track }) =>
         from(this.trackService.addTrack(track))
           .pipe(
+            delay(500),
             map(track => TrackActions.addTrackSuccess({ track })),
             catchError(error => of(TrackActions.addTrackFailure({ error })))
           ))

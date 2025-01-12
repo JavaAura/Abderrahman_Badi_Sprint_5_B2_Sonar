@@ -94,29 +94,30 @@ export const reducer = createReducer(
 
   on(TrackActions.loadTrackAudio, (state) => ({
     ...state,
-    status: 'loading' as const
+    loadTrackStatus: 'loading' as const
   })),
   on(TrackActions.loadTrackAudioSuccess, (state, { file }) => ({
     ...state,
     trackAudio: file,
-    status: 'success' as const
+    loadTrackStatus: 'success' as const
   })),
   on(TrackActions.loadTrackAudioFailure, (state, { error }) => ({
     ...state,
-    status: 'loading' as const,
+    loadTrackStatus: 'loading' as const,
     error: error
   })),
   on(TrackActions.loadTrackCover, (state) => ({
     ...state,
+    loadTrackStatus: 'loading' as const
   })),
   on(TrackActions.loadTrackCoverSuccess, (state, { file }) => ({
     ...state,
     trackCover: file,
-    status: 'success' as const
+    loadTrackStatus: 'success' as const
   })),
   on(TrackActions.loadTrackCoverFailure, (state, { error }) => ({
     ...state,
-    status: 'loading' as const,
+    loadTrackStatus: 'loading' as const,
     error: error
   })),
 
@@ -222,6 +223,14 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.trackCovers
     ),
+    selectTrackStatus: createSelector(
+      selectTracksState,
+      (state: State) => state.loadTrackStatus
+    ),
+    selectActiveTrack: createSelector(
+      selectTracksState,
+      (state: State) => state.activeTrack
+    ),
 
   }),
 });
@@ -240,4 +249,6 @@ export const {
   selectEditedTrack,
   selectUploadStatus,
   selectUploadError,
+  selectTrackStatus,
+  selectActiveTrack,
 } = tracksFeature;
