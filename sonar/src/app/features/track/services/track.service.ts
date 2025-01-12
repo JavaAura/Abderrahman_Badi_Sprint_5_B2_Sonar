@@ -54,19 +54,34 @@ export class TrackService {
     });
   }
 
-  async getAllTracksByName(name: string): Promise<Track[]> {
+  async getAllTracksByName(searchTerm: string): Promise<Track[]> {
     await this.db.initialize();
-    return new Promise((resolve, reject) => {
-      const store = this.db.getTransaction(this.storeName, 'readonly');
-      const request = store.getAll();
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = (event) => {
-        console.error('Error retrieving all tracks:', request.error);
-        reject(request.error);
-      };
+    
+    return new Promise<Track[]>((resolve, reject) => {
+      try {
+        const store = this.db.getTransaction(this.storeName, 'readonly');
+        const index = store.index('name');
+        
+        const request = index.getAll();
+        
+        request.onsuccess = () => {
+          const results = request.result.filter(track => 
+            track.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          resolve(results);
+        };
+        
+        request.onerror = () => {
+          const error = request.error?.message || 'Unknown error';
+          console.error('Error searching tracks by name:', error);
+          reject(new Error(`Failed to search tracks: ${error}`));
+        };
+      } catch (err) {
+        reject(err);
+      }
     });
   }
+  
 
   async updateTrack(update: Update<Track>): Promise<Update<Track>> {
     await this.db.initialize();
