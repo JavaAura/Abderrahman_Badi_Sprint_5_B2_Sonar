@@ -28,7 +28,9 @@ export class IndexedDbService {
           db.createObjectStore('playlists', { keyPath: 'id' });
         }
         if (!db.objectStoreNames.contains('files')) {
-          db.createObjectStore('files', { keyPath: 'id' });
+          const store = db.createObjectStore('files', { keyPath: 'id' });
+          store.createIndex('trackId', 'trackId');
+          store.createIndex('active', 'active');
         }
       };
 

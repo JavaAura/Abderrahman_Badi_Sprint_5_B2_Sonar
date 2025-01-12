@@ -6,11 +6,11 @@
         </div>
     </div>
     <div class="flex-1 min-h-0 overflow-y-auto md:px-[4%]">
-        <div class="flex flex-col gap-1 items-center">
-            <div *ngFor="let item of counterArray ; let  i = index" (click)="editTrack(track)"
+        <div *ngIf="(tracks$ | async)?.length! > 0" class="flex flex-col gap-1 items-center">
+            <div *ngFor="let track of tracks$ | async ; let  i = index"
                 [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border bg-white border-b-gray-400' : 'bg-gray-primary'"
-                class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-sm pl-2 md:px-4">
-                <div class="group-hover:visible invisible flex items-center justify-end w-[8%] md:w-[5%]">
+                class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-sm pl-2 md:px-4 text-gray-800">
+                <div (click)="play(track)" class="md:group-hover:block md:hidden flex items-center justify-end w-[6%] md:w-[3%]">
                     <button class="hover:bg-gray-200 rounded-md p-1">
                         <svg class="stroke-red-custom w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
                             <path
@@ -19,23 +19,62 @@
                         </svg>
                     </button>
                 </div>
-                <div class="flex items-center w-[30%] md:w-[35%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap"> div {{ item }}</p>
+                <div class="md:group-hover:hidden md:block flex items-center justify-end w-[6%] md:w-[3%]">
+                    <svg class="stroke-gray-800 w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 19C9 20.6569 7.65685 22 6 22C4.34315 22 3 20.6569 3 19C3 17.3431 4.34315 16 6 16C7.65685 16 9 17.3431 9 19Z"
+                            stroke="current" stroke-width="1.5" />
+                        <path d="M21 17C21 18.6569 19.6569 20 18 20C16.3431 20 15 18.6569 15 17C15 15.3431 16.3431 14 18 14C19.6569 14 21 15.3431 21 17Z"
+                            stroke="current" stroke-width="1.5" />
+                        <path d="M9 19V8" stroke="current" stroke-width="1.5" />
+                        <path d="M21 17V6" stroke="current" stroke-width="1.5" />
+                        <path
+                            d="M15.7351 3.75466L11.7351 5.08799C10.4151 5.52801 9.75503 5.74801 9.37752 6.27179C9 6.79556 9 7.49128 9 8.88273V11.9997L21 7.99969V7.54939C21 5.01693 21 3.7507 20.1694 3.15206C19.3388 2.55341 18.1376 2.95383 15.7351 3.75466Z"
+                            stroke="current" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="flex items-center w-[30%]">
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap"> {{ track.name }}</p>
                 </div>
                 <div class="flex items-center justify-center w-[19%] md:w-[15%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">Artist {{ item }}</p>
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.author }}</p>
                 </div>
                 <div class="flex items-center justify-center w-[19%] md:w-[15%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">Genre {{ item }}</p>
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.category }}</p>
                 </div>
                 <div class="flex items-center justify-center w-0 md:w-[15%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">2024-01-18</p>
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.creationDate | date:'dd/MM/yyyy' }}</p>
                 </div>
                 <div class="flex items-center justify-center md:justify-end w-[19%] md:w-[15%]">
-                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">06:53</p>
+                    <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.duration | timeFormat }}</p>
                 </div>
+                <div class="md:group-hover:visible md:invisible flex items-center justify-end w-[6%] md:w-[3%]">
+                    <button class="hover:bg-gray-200 rounded-md p-1">
+                        <svg class="w-5 h-5 stroke-gray-800" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24"
+                            fill="none">
+                            <g id="Menu / More_Vertical">
+                                <g id="Vector">
+                                    <path
+                                        d="M11 18C11 18.5523 11.4477 19 12 19C12.5523 19 13 18.5523 13 18C13 17.4477 12.5523 17 12 17C11.4477 17 11 17.4477 11 18Z"
+                                        stroke="current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z"
+                                        stroke="current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M11 6C11 6.55228 11.4477 7 12 7C12.5523 7 13 6.55228 13 6C13 5.44772 12.5523 5 12 5C11.4477 5 11 5.44772 11 6Z"
+                                        stroke="current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!((tracks$ | async)?.length! > 0)" class="flex flex-col gap-1 items-center">
+            <div
+                class="group flex items-center justify-center gap-1 md:gap-2 border-b-0 shadow-sm border bg-white border-b-gray-400 rounded-lg hover:bg-gray-secondary h-[44px] w-full pl-2 md:px-4">
+                <p>no music found</p>
             </div>
         </div>
     </div>
 </div>
-<app-track-form *ngIf="isOpen" (close)="closeTrackForm()"/>
+<app-track-form *ngIf="isOpen" (close)="closeTrackForm()" />

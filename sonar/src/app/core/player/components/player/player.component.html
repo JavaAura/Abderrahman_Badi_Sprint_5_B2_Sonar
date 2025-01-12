@@ -1,11 +1,11 @@
 <div class="w-[95%] mx-auto h-[6vh] pb-2 flex gap-3 items-center">
-  <p class="text-[13px]">{{ currentTime | timeFormat }}</p>
+  <p class="text-[13px]">{{ currentTime | timeFormatPlayer }}</p>
   <!-- <input class="w-full rounded-md h-full" min="0" max="225" step="0.1" type="range"> -->
   <div class="range-slider w-full" style='--min:0;' [ngStyle]="{'--max': duration}">
     <input type="range" min="0" max="225" step="0.1" value="0" (input)="updateValue($event)">
     <div class='range-slider__progress'></div>
   </div>
-  <p class="text-[13px]">{{ duration | timeFormat }}</p>
+  <p class="text-[13px]">{{ duration | timeFormatPlayer }}</p>
 </div>
 <div class="w-[99%] mx-auto h-[12vh] flex items-center justify-between pb-2">
   <div class="flex items-center gap-2 w-[35%] sm:w-[40%] md:w-[46%]">

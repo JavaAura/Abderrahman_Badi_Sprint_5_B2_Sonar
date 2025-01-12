@@ -11,11 +11,11 @@ export class TimeFormatPipe implements PipeTransform {
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
 
-    const hoursString = this.pad(hours) ;
+    const hoursString = hours == 0 ? '' : `${this.pad(hours)}:` ;
     const minutesString = this.pad(minutes);
     const secondsString = this.pad(secs);
 
-    return `${hoursString}:${minutesString}:${secondsString}`;
+    return `${hoursString}${minutesString}:${secondsString}`;
   }
   
   private pad(value: number): string {
