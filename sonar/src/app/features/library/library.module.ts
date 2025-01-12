@@ -11,6 +11,7 @@ import { TrackCoversPopupComponent } from './components/track-covers-popup/track
 import { TrackFilesPopupComponent } from './components/track-files-popup/track-files-popup.component';
 import { SharedModule } from '../../shared/shared.module';
 import { MiniPlayerComponent } from '../../shared/components/mini-player/mini-player.component';
+import { TrackCoverComponent } from '../../shared/components/track-cover/track-cover.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { MiniPlayerComponent } from '../../shared/components/mini-player/mini-pl
     TrackCoversPopupComponent,
     TrackFilesPopupComponent,
     MiniPlayerComponent,
+    TrackCoverComponent,
   ],
   imports: [
     SharedModule,

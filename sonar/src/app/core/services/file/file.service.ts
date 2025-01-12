@@ -132,12 +132,12 @@ export class FileService {
     });
   }
 
-  async updateFileActiveStatus(fileId: string, trackId: string): Promise<void> {
+  async updateFileActiveStatus(fileId: string, trackId: string, fileType: FileType): Promise<void> {
     await this.db.initialize();
 
     return new Promise((resolve, reject) => {
       try {
-        this.getFilesByTrackId(trackId, FileType.AUDIO).then(files => {
+        this.getFilesByTrackId(trackId, fileType).then(files => {
           const store = this.db.getTransaction(this.storeName, 'readwrite');
 
           const updatePromises = files.map(file => {

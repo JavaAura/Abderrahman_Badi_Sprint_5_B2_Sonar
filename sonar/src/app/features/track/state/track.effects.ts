@@ -177,6 +177,27 @@ export class TrackEffects {
     )
   );
 
+  uploadCoverFile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TrackActions.uploadTrackCover),
+      mergeMap(({ file }) =>
+        from(this.fileService.storeFile(file)).pipe(
+          map((success) => {
+            if (success) {
+              return TrackActions.uploadTrackCoverSuccess({ file });
+            }
+            return TrackActions.uploadTrackCoverFailure({ error: 'Failed to store files' });
+          }),
+          catchError((error: unknown) => {
+            const errorMessage =
+              error instanceof Error ? error.message : 'An unknown error occurred';
+            return of(TrackActions.uploadTrackCoverFailure({ error: errorMessage }));
+          })
+        )
+      )
+    )
+  );
+
   updateTrack$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TrackActions.updateTrack),

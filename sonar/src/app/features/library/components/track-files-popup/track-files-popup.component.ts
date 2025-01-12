@@ -5,7 +5,7 @@ import { StoredFile } from '../../../../core/services/file/file.service';
 import { selectError, selectLoadFilesStatus, selectTrackAudios } from '../../../track/state/track.reducer';
 import { Track } from '../../../track/state/track.model';
 import { TrackActions } from '../../../track/state/track.actions';
-import { FormBuilder, FormGroup, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { FileType } from '../../../../core/enums/file-type.enum';
 
 @Component({
@@ -25,7 +25,7 @@ export class TrackFilesPopupComponent {
 
   constructor(private store: Store, private fb: FormBuilder) {
     this.trackAudioForm = this.fb.group({
-      file: ['', this.fileValidator.bind(this)],
+      file: ['', [Validators.required ,this.fileValidator.bind(this)]],
     });
   }
 

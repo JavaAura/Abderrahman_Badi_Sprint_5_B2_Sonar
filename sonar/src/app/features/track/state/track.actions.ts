@@ -14,6 +14,9 @@ export const TrackActions = createActionGroup({
     'Upload Track File': props<{ file: StoredFile }>(),
     'Upload Track File Success': props<{ file: StoredFile }>(),
     'Upload Track File Failure': props<{ error: string }>(),
+    'Upload Track Cover': props<{ file: StoredFile }>(),
+    'Upload Track Cover Success': props<{ file: StoredFile }>(),
+    'Upload Track Cover Failure': props<{ error: string }>(),
 
 
     'Load Track Audio': props<{ trackId: string }>(),

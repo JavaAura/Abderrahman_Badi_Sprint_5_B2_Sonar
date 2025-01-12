@@ -16,7 +16,8 @@ export class LibraryComponent {
   tracks$: Observable<Track[]> = this.store.select(selectAll);
   status$: Observable<string> = this.store.select(selectStatus);
   error$: Observable<string | null> = this.store.select(selectMessage);
-  activeTrack$: Observable<Track | null> = this.store.select(selectActiveTrack)
+  activeTrack$: Observable<Track | null> = this.store.select(selectActiveTrack);
+  openTrackId: string | null = null;
 
 
   constructor(private store: Store) { }
@@ -28,6 +29,14 @@ export class LibraryComponent {
 
   ngOnInit() {
     this.store.dispatch(TrackActions.loadTracks());
+  }
+
+  toggleMenu(trackId: string): void {
+    this.openTrackId = this.openTrackId === trackId ? null : trackId;
+  }
+
+  closeMenu(): void {
+    this.openTrackId = null;
   }
 
   closeTrackForm() {

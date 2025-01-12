@@ -4,33 +4,32 @@ import { Track } from '../../../features/track/state/track.model';
 import { FileType } from '../../../core/enums/file-type.enum';
 
 @Component({
-  selector: 'app-mini-player',
-  templateUrl: './mini-player.component.html',
-  styleUrl: './mini-player.component.scss'
+  selector: 'app-track-cover',
+  templateUrl: './track-cover.component.html',
+  styleUrl: './track-cover.component.scss'
 })
-export class MiniPlayerComponent {
+export class TrackCoverComponent {
   @Input() file!: StoredFile;
   @Input() track!: Track;
-  audioUrl: string | null = null;
+  coverUrl: string | null = null;
 
   constructor(
     private fileService: FileService,
   ) { }
 
   ngOnInit() {
-    this.audioUrl = URL.createObjectURL(this.file.file);
+    this.coverUrl = URL.createObjectURL(this.file.file);
   }
 
   async setAsActive() {
     try {
-      await this.fileService.updateFileActiveStatus(this.file.id, this.track.id, FileType.AUDIO);
+      await this.fileService.updateFileActiveStatus(this.file.id, this.track.id, FileType.COVER);
     } catch (error) {
       console.error('Error setting active audio:', error);
     }
   }
 
   ngOnDestroy() {
-    URL.revokeObjectURL(this.audioUrl!);
+    URL.revokeObjectURL(this.coverUrl!);
   }
-
 }

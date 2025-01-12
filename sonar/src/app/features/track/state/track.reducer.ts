@@ -135,6 +135,21 @@ export const reducer = createReducer(
     error: error
   })),
 
+  on(TrackActions.uploadTrackCover, (state) => ({
+    ...state,
+    loadFilesStatus: 'loading' as const
+  })),
+  on(TrackActions.uploadTrackCoverSuccess, (state, { file }) => ({
+    ...state,
+    loadFilesStatus: 'success' as const,
+    trackCovers: [...state.trackCovers, file]
+  })),
+  on(TrackActions.uploadTrackCoverFailure, (state, { error }) => ({
+    ...state,
+    loadFilesStatus: 'error' as const,
+    error: error
+  })),
+
 
   on(TrackActions.loadTrackAudio, (state) => ({
     ...state,

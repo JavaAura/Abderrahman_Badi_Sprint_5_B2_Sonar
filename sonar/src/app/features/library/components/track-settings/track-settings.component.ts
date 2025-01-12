@@ -8,8 +8,10 @@ import { Track } from '../../../track/state/track.model';
 })
 export class TrackSettingsComponent {
   @Input() track!: Track;
+  @Input() isOpen: boolean = false; // Menu state controlled by parent
   @Output() open = new EventEmitter<Track>();
-  isOpen: boolean = false
+  @Output() toggleMenu = new EventEmitter<void>();
+  @Output() closeMenu = new EventEmitter<void>();
   isOpenFilesPopup: boolean = false;
   isOpenCoversPopup: boolean = false;
 
@@ -19,6 +21,10 @@ export class TrackSettingsComponent {
     if (!target.closest('.menu-button')) {
       this.isOpen = false;
     }
+  }
+
+  onToggleMenu(): void {
+    this.toggleMenu.emit();
   }
 
   editTrack() {
