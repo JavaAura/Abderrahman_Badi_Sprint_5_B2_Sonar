@@ -1,18 +1,41 @@
 <div class="w-[95%] mx-auto h-[6vh] pb-2 flex gap-3 items-center">
   <p class="text-[13px]">{{ currentTime | timeFormatPlayer }}</p>
   <!-- <input class="w-full rounded-md h-full" min="0" max="225" step="0.1" type="range"> -->
-  <div class="range-slider w-full" style='--min:0;' [ngStyle]="{'--max': duration}">
-    <input type="range" min="0" max="225" step="0.1" value="0" (input)="updateValue($event)">
+  <div class="range-slider w-full" style='--min:0;'
+    [ngStyle]="{'--max': (activeTrack$ | async) === null ? 100 : (activeTrack$ | async)!.duration, '--value': currentTime}">
+    <input type="range" min="0" [max]="(activeTrack$ | async) === null ? 100 : (activeTrack$ | async)!.duration" step="0.1" [value]="currentTime"
+      (change)="updateTrackProgress($event)" (input)="updateValue($event)">
     <div class='range-slider__progress'></div>
   </div>
-  <p *ngIf="activeTrack$ | async as track " class="text-[13px]">{{ track.duration| timeFormatPlayer }}</p>
-  <p *ngIf="!(activeTrack$ | async) as track " class="text-[13px]">00:00:00</p>
+  <div *ngIf="bothSuccess$ | async">
+    <p *ngIf="activeTrack$ | async as track" class="text-[13px]">{{ track.duration| timeFormatPlayer }}</p>
+    <p *ngIf="!(activeTrack$ | async) as track " class="text-[13px]">00:00:00</p>
+  </div>
+  <div class="h-5 w-12 animate-pulse bg-gray-300 rounded-md" *ngIf="bothLoading$ | async">
+
+  </div>
+  <div *ngIf="bothIdle$ | async">
+    <p *ngIf="!(activeTrack$ | async) as track " class="text-[13px]">00:00:00</p>
+  </div>
 </div>
 <div class="w-[99%] mx-auto h-[12vh] flex items-center justify-between pb-2">
   <div class="flex items-center gap-2 w-[35%] sm:w-[40%] md:w-[46%]">
-      <img *ngIf="url" src="" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
+    <div *ngIf="bothSuccess$ | async">
+      <img *ngIf="url" [src]="url" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block object-cover" alt="">
       <img *ngIf="!url" src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
-    <p class="flex-shrink text-xl font-medium text-ellipsis overflow-hidden whitespace-nowrap">{{ (activeTrack$ | async)?.name }}</p>
+    </div>
+    <div class="h-20 w-20 animate-pulse bg-gray-300 rounded-md" *ngIf="bothLoading$ | async">
+
+    </div>
+    <div *ngIf="bothIdle$ | async">
+      <img src="assets/default_music.png" class="w-20 h-20 border border-gray-200 border-b-0 shadow-sm rounded-md hidden sm:block" alt="">
+    </div>
+    <div class="h-7 w-full animate-pulse bg-gray-300 rounded-md" *ngIf="bothLoading$ | async">
+
+    </div>
+    <div *ngIf="!(bothLoading$ | async)">
+      <p class="flex-shrink text-xl font-medium text-ellipsis overflow-hidden whitespace-nowrap">{{ (activeTrack$ | async)?.name }}</p>
+    </div>
   </div>
   <div class="flex justify-center items-center gap-2 md:gap-4 w-[10%] md:w-[14%]">
     <button class="h-10 w-10 hover:bg-gray-100 active:bg-gray-300 rounded-md p-2 flex items-center justify-center">
@@ -33,7 +56,7 @@
           fill="#323232" />
       </svg>
       <svg *ngIf="isPlaying" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" fill="white" />
+        <rect width="24" height="24" fill="none" />
         <path fill-rule="evenodd" clip-rule="evenodd"
           d="M20 5L20 19C20 20.6569 18.6569 22 17 22L16 22C14.3431 22 13 20.6569 13 19L13 5C13 3.34314 14.3431 2 16 2L17 2C18.6569 2 20 3.34315 20 5Z"
           fill="#323232" />

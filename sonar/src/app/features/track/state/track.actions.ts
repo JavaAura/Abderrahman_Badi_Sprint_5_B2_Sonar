@@ -15,7 +15,7 @@ export const TrackActions = createActionGroup({
     'Load Track Audio Success': props<{ file: StoredFile }>(),
     'Load Track Audio Failure': props<{ error: string }>(),
     'Load Track Cover': props<{ trackId: string }>(),
-    'Load Track Cover Success': props<{ file: StoredFile }>(),
+    'Load Track Cover Success': props<{ file: StoredFile | null }>(),
     'Load Track Cover Failure': props<{ error: string }>(),
 
 

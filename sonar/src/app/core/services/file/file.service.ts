@@ -68,7 +68,7 @@ export class FileService {
     });
   }
 
-  async getFilesByTrackId(trackId: string): Promise<StoredFile[]> {
+  async getFilesByTrackId(trackId: string, fileType: FileType): Promise<StoredFile[]> {
     await this.db.initialize();
 
     return new Promise((resolve, reject) => {
@@ -82,8 +82,12 @@ export class FileService {
         request.onsuccess = (event: Event) => {
           const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
           if (cursor) {
-            files.push(cursor.value);
-            cursor.continue();
+            const storedFile = cursor.value as StoredFile;
+            if (storedFile.type === fileType) {
+              files.push(cursor.value);
+            } else {
+              cursor.continue();
+            }
           } else {
             resolve(files);
           }
@@ -97,7 +101,7 @@ export class FileService {
   }
 
 
-  async getFileByTrackId(trackId: string): Promise<StoredFile | null> {
+  async getFileByTrackId(trackId: string, fileType: FileType): Promise<StoredFile | null> {
     await this.db.initialize();
 
     return new Promise((resolve, reject) => {
@@ -112,7 +116,7 @@ export class FileService {
 
           if (cursor) {
             const storedFile = cursor.value as StoredFile;
-            if (storedFile.active) {
+            if (storedFile.active && storedFile.type === fileType) {
               resolve(storedFile);
             } else {
               cursor.continue();
