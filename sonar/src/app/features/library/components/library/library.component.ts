@@ -31,7 +31,7 @@ export class LibraryComponent {
     this.store.dispatch(TrackActions.loadTracks());
   }
 
-  toggleMenu(trackId: string): void {
+  toggleMenu(trackId: string): void {    
     this.openTrackId = this.openTrackId === trackId ? null : trackId;
   }
 

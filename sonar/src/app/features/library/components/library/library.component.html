@@ -14,10 +14,12 @@
         </div>
         <div *ngIf="status === 'success'" class="loading-indicator">
             <div *ngIf="(tracks$ | async)?.length! > 0" class="flex flex-col gap-1 items-center">
-                <div *ngFor="let track of tracks$ | async ; let  i = index"
-                    [ngClass]="i % 2 == 0 ? 'border-b-0 shadow-sm border bg-white border-b-gray-400' : 'bg-gray-primary'"
-                    [ngClass]="track.id == (activeTrack$ | async)?.id ? 'text-red-custom stroke-red-custom' : 'text-gray-800 stroke-gray-800'"
-                    class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-sm pl-2 md:px-4 ">
+                <div *ngFor="let track of tracks$ | async ; let  i = index" [ngClass]="{
+                    'border-b-0 shadow-sm border bg-white border-b-gray-400': i % 2 == 0,
+                    'bg-gray-primary': i % 2 != 0,
+                    'text-red-custom stroke-red-custom': track.id == (activeTrack$ | async)?.id,
+                    'text-gray-800 stroke-gray-800': track.id != (activeTrack$ | async)?.id
+                }" class="group flex items-center gap-1 md:gap-2 rounded-lg hover:bg-gray-secondary h-[44px] w-full text-sm pl-2 md:px-4 ">
                     <div (click)="play(track)" class="md:group-hover:block md:hidden flex items-center justify-end w-[6%] md:w-[3%]">
                         <button class="hover:bg-gray-200 rounded-md p-1">
                             <svg class="stroke-red-custom w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
@@ -56,9 +58,10 @@
                     <div class="flex items-center justify-center md:justify-end w-[19%] md:w-[15%]">
                         <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.duration | timeFormat }}</p>
                     </div>
+                    {{ openTrackId === track.id }}
                     <div class="flex items-center justify-end w-[6%] md:w-[3%]">
                         <app-track-settings [track]="track" [isOpen]="openTrackId === track.id" (toggleMenu)="toggleMenu(track.id)"
-                        (closeMenu)="closeMenu()" (open)="editTrack(track)" class="relative !text-gray-800"/>
+                            (closeMenu)="closeMenu()" (open)="editTrack(track)" class="relative !text-gray-800" />
                     </div>
                 </div>
             </div>

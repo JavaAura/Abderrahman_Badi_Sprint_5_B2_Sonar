@@ -15,7 +15,7 @@
                         <p>Loading</p>
                     </div>
                 </div>
-                <div *ngIf="status === 'success'" class="grid grid-cols-3">
+                <div *ngIf="status === 'success'" class="grid grid-cols-2 md:grid-cols-3 place-items-center">
                     <app-track-cover *ngFor="let file of coverFiles$ | async" [track]="track" [file]="file" />
                 </div>
             </div>
