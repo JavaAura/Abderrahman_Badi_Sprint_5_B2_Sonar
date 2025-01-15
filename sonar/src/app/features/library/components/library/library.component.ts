@@ -25,10 +25,10 @@ export class LibraryComponent {
   play(track: Track) {
     this.store.dispatch(TrackActions.clearTrack());
     this.store.dispatch(TrackActions.playTrack({ track: track }));
+    this.store.dispatch(TrackActions.loadTrackHistory({ track: track }));
   }
 
   ngOnInit() {
-    this.store.dispatch(TrackActions.loadTracks());
   }
 
   toggleMenu(trackId: string): void {

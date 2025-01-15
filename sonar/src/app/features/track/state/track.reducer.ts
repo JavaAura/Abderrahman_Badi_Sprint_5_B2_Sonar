@@ -21,7 +21,7 @@ export interface State extends EntityState<Track> {
   loadFilesStatus: 'idle' | 'loading' | 'success' | 'error';
   error: string | null;
   activeTrack: Track | null;
-
+  trackHistory: Map<string, Track>;
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>();
@@ -40,7 +40,8 @@ export const initialState: State = adapter.getInitialState({
   loadTrackAudioStatus: 'idle',
   loadTrackCoverStatus: 'idle',
   loadFilesStatus: 'idle',
-  error: null
+  error: null,
+  trackHistory: new Map<string, Track>()
 });
 
 export const reducer = createReducer(
@@ -65,6 +66,27 @@ export const reducer = createReducer(
     ...state,
     activeTrack: null,
   })),
+  on(TrackActions.loadTrackHistory, (state, { track }) => {
+    let newHistory = new Map(state.trackHistory);
+    const firstKey = newHistory.keys().next().value;
+
+    if (newHistory.size >= 3) {
+      if (track.id !== firstKey) {
+        newHistory.delete(firstKey!);
+      }
+    }
+
+    if (track.id === firstKey) {
+      newHistory.delete(firstKey!);
+    }
+    newHistory.set(track.id, track);
+
+
+    return {
+      ...state,
+      trackHistory: newHistory
+    };
+  }),
 
 
 
@@ -332,6 +354,10 @@ export const tracksFeature = createFeature({
       selectTracksState,
       (state: State) => state.error
     ),
+    selectTrackHistory: createSelector(
+      selectTracksState,
+      (state: State) => Array.from(state.trackHistory.values()).reverse()
+    ),
 
   }),
 });
@@ -355,4 +381,5 @@ export const {
   selectLoadFilesStatus,
   selectActiveTrack,
   selectError,
+  selectTrackHistory,
 } = tracksFeature;

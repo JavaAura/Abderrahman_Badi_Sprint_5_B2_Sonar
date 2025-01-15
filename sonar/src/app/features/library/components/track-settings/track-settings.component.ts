@@ -19,7 +19,7 @@ export class TrackSettingsComponent {
   handleClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     if (!target.closest('.menu-button')) {
-      this.isOpen = false;
+      this.closeMenu.emit();
     }
   }
 
@@ -31,11 +31,11 @@ export class TrackSettingsComponent {
     this.open.emit(this.track);
   }
 
-  closeFilesPopup(){
+  closeFilesPopup() {
     this.isOpenFilesPopup = false;
   }
 
-  closeCoversPopup(){
+  closeCoversPopup() {
     this.isOpenCoversPopup = false;
   }
 }
