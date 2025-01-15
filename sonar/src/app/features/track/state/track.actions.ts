@@ -55,6 +55,7 @@ export const TrackActions = createActionGroup({
 
     'Play Track': props<{ track: Track }>(),
     'Clear Track': emptyProps(),
+    'Load Track History': props<{ track: Track }>(),
 
   }
 });

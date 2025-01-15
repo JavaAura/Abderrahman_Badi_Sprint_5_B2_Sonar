@@ -58,7 +58,6 @@
                     <div class="flex items-center justify-center md:justify-end w-[19%] md:w-[15%]">
                         <p class="text-ellipsis overflow-hidden whitespace-nowrap">{{ track.duration | timeFormat }}</p>
                     </div>
-                    {{ openTrackId === track.id }}
                     <div class="flex items-center justify-end w-[6%] md:w-[3%]">
                         <app-track-settings [track]="track" [isOpen]="openTrackId === track.id" (toggleMenu)="toggleMenu(track.id)"
                             (closeMenu)="closeMenu()" (open)="editTrack(track)" class="relative !text-gray-800" />
